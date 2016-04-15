@@ -3,7 +3,7 @@
 	 * Plugin Name: WooCommerce Urb-it Shipping
 	 * Plugin URI: http://urb-it.com/
 	 * Description: Let your customers choose urb-it as shipping method.
-	 * Version: 2.1.2
+	 * Version: 2.1.3
 	 * Author: Webbmekanikern
 	 * Author URI: http://www.webbmekanikern.se/
 	 * Text Domain: woocommerce-urb-it
@@ -15,7 +15,7 @@
 	if(!defined('ABSPATH')) exit;
 	
 	class WooCommerce_Urb_It {
-		const VERSION = '2.1.2';
+		const VERSION = '2.1.3';
 		const LANG = 'woocommerce-urb-it';
 		
 		const COMPANY_URL = 'http://urb-it.com/';
