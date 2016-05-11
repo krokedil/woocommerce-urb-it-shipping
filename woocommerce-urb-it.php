@@ -44,7 +44,7 @@
 		static $added_checkout_assets = false;
 		static $postcode_validator_assets_included = false;
 		static $log = null;
-		static $debug = false;
+		static $debug = true;
 		
 		
 		public static function init() {
@@ -377,7 +377,7 @@
 			if(empty($shipping_method) || isset($order->urb_it_order_id)) return;
 			
 			$delivery_type = ($shipping_method == 'urb_it_one_hour') ? 'OneHour' : 'Specific';
-			$delivery_time = self::create_datetime(($delivery_type == 'OneHour') ? '+1 hour' : (!empty($order->urb_it_delivery_time) ? $order->urb_it_delivery_time : '+1 hour'));
+			$delivery_time = self::create_datetime(($delivery_type == 'OneHour') ? apply_filters('woocommerce_urb_it_one_hour_offset', '+1 hour') : (!empty($order->urb_it_delivery_time) ? $order->urb_it_delivery_time : apply_filters('woocommerce_urb_it_specific_time_offset', '+1 hour 15 min')));
 			
 			if(!self::validate_all_opening_hours($delivery_time)) {
 				self::log('Order #' . $order_id . ' (type ' . $delivery_type . ') got an invalid delivery time of ' . $delivery_time->format('Y-m-d H:i:s') . '.');
@@ -731,6 +731,8 @@
 				wc_add_notice(sprintf(__('As the total volume of your cart is over %d liters, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_VOLUME / 1000), 'error');
 			}
 			
+			if(apply_filters('woocommerce_urb_it_skip_validation', false)) return;
+			
 			$result = self::validate_against_urbit($delivery_time, $postcode, $delivery_type);
 			
 			if($result === true) return;
@@ -829,6 +831,8 @@
 			do_action('woocommerce_urb_it_before_validate_order', $urbit);
 			
 			$status = $urbit->validate();
+			
+			self::log($status);
 			
 			if($status !== 200) {
 				if(empty($urbit->result)) return false;
