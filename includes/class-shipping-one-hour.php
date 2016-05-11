@@ -11,8 +11,8 @@
 				$this->lang = WooCommerce_Urb_It::LANG;
 				
 				$this->id = 'urb_it_one_hour';
-				$this->method_title = __('urb-it 1 hour', $this->lang);
-				$this->method_description = __('urb-it 1 hour allows deliveries within an hour.', $this->lang);
+				$this->method_title = __('Now', $this->lang);
+				$this->method_description = __('Allows deliveries now.', $this->lang);
 				$this->init();
 			}
 			
@@ -38,7 +38,7 @@
 					'enabled' => array(
 						'title' 		=> __('Enable/Disable', $this->lang),
 						'type' 			=> 'checkbox',
-						'label' 		=> __('Enable urb-it 1 hour', $this->lang),
+						'label' 		=> __('Enable Now', $this->lang),
 						'default' 		=> 'yes'
 					),
 					'title' => array(
