@@ -441,7 +441,12 @@
 				
 				do_action('woocommerce_urb_it_order_success', $urbit->result, $order_id);
 				
-				if($delivery_type == 'OneHour') update_post_meta($order_id, '_urb_it_delivery_time', $delivery_time->format('Y-m-d H:i'));
+				if(isset($urbit->result->delivery) && isset($urbit->result->delivery->expected_delivery_at)) {
+					$delivery_time = new DateTime($urbit->result->delivery->expected_delivery_at);
+					$delivery_time->setTimezone(new DateTimeZone('Europe/Stockholm'));
+				}
+				
+				/*if($delivery_type == 'OneHour')*/ update_post_meta($order_id, '_urb_it_delivery_time', $delivery_time->format('Y-m-d H:i'));
 				
 				if(apply_filters('woocommerce_urb_it_send_thankyou_email', true)) $order->add_order_note(sprintf(__('Thank you for choosing urb-it as shipping method. Your order is confirmed and will be delivered at %s.', self::LANG), $delivery_time->format('Y-m-d H:i')), true);
 				
