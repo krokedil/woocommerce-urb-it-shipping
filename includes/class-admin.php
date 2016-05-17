@@ -3,7 +3,9 @@
 	if(!defined('ABSPATH')) exit;
 	
 	class WooCommerce_Urb_It_Admin extends WooCommerce_Urb_It {
-		public static function init() {
+		public function __construct() {
+			parent::__construct();
+			
 			// Create plugin settings menu
 			add_action('admin_menu', array(__CLASS__, 'create_menu'));
 			
@@ -14,15 +16,19 @@
 			
 			// Notice admin if any required settings or functions are missing
 			add_action('admin_notices', array(__CLASS__, 'check_requirements'));
+			
+			add_action('admin_head', array(__CLASS__, 'order_status_icon'));
+			
+			require_once($this->path . 'includes/class-admin-settings.php');
 		}
 		
 		
-		public static function create_menu() {
+		public function create_menu() {
 			add_submenu_page('woocommerce', __('Urb-it', parent::LANG), __('Urb-it', parent::LANG), 'manage_woocommerce', 'wc-urb-it-settings', array(__CLASS__, 'page_settings'));
 		}
 		
 		
-		public static function check_requirements($foobar) {
+		public function check_requirements($foobar) {
 			$screen = get_current_screen();
 			
 			if($screen->id == 'woocommerce_page_wc-urb-it-settings') return;
@@ -47,7 +53,7 @@
 		}
 		
 		
-		public static function page_settings() {
+		public function page_settings() {
 			if(!isset($_GET['urb-it-log'])) {
 				self::save_settings();
 				
@@ -80,7 +86,7 @@
 		}
 		
 		
-		public static function save_settings() {
+		public function save_settings() {
 			if(!isset($_POST['submit']) || !current_user_can('manage_woocommerce')) return;
 			
 			if(isset($_POST['general'])) {
@@ -95,7 +101,7 @@
 		}
 		
 		
-		public static function bulky_product_field() {
+		public function bulky_product_field() {
 			woocommerce_wp_checkbox(array(
 				'id'						=> '_urb_it_bulky',
 				'label'					=> __('Bulky Product', self::LANG),
@@ -104,7 +110,7 @@
 		}
 		
 		
-		public static function bulky_product_field_save($post_id) {
+		public function bulky_product_field_save($post_id) {
 			$bulky = sanitize_key($_POST['_urb_it_bulky']);
 			
 			if(!empty($bulky)) update_post_meta($post_id, '_urb_it_bulky', $bulky);
@@ -112,10 +118,21 @@
 		}
 		
 		
-		public static function inform_limits() {
+		public function inform_limits() {
 			?><p class="form-field"><?php echo sprintf(__('Note: If the product exceeds %d kilos and/or %d liters, it can\'t be delivered by urb-it.', self::LANG), self::ORDER_MAX_WEIGHT, self::ORDER_MAX_VOLUME / 1000); ?></p><?php
+		}
+		
+		
+		// Order status: Add icon
+		public function order_status_icon() {
+			?>
+				<style>
+					.widefat .column-order_status mark.picked-up {
+						background: url('<?php echo plugin_dir_url(__FILE__); ?>assets/img/wc-picked-up.png') no-repeat center center;
+					}
+				</style>
+			<?php
 		}
 	}
 	
-	WooCommerce_Urb_It_Admin::init();
-?>
+	return new WooCommerce_Urb_It_Admin;
