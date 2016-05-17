@@ -44,7 +44,7 @@
 		static $added_checkout_assets = false;
 		static $postcode_validator_assets_included = false;
 		static $log = null;
-		static $debug = true;
+		static $debug = false;
 		
 		
 		public static function init() {
