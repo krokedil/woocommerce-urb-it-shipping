@@ -67,107 +67,97 @@
 		public function order_payed($order_id) {
 			if(apply_filters('woocommerce_urb_it_abort_submition', false)) return;
 			
-			$order = wc_get_order($order_id);
-			$valid_shipping_methods = array('urb_it_one_hour', 'urb_it_specific_time');
-			$shipping_method = '';
-			
-			foreach($order->get_shipping_methods() as $method) {
-				if(in_array($method['method_id'], $valid_shipping_methods)) {
-					$shipping_method = $method['method_id'];
-					break;
+			try {
+				$order = wc_get_order($order_id);
+				$valid_shipping_methods = array('urb_it_one_hour', 'urb_it_specific_time');
+				$shipping_method = '';
+				
+				foreach($order->get_shipping_methods() as $method) {
+					if(in_array($method['method_id'], $valid_shipping_methods)) {
+						$shipping_method = $method['method_id'];
+						break;
+					}
 				}
-			}
-			
-			if(empty($shipping_method) || isset($order->urb_it_order_id)) return;
-			
-			$delivery_type = ($shipping_method == 'urb_it_one_hour') ? 'OneHour' : 'Specific';
-			$delivery_time = self::create_datetime(($delivery_type == 'OneHour') ? apply_filters('woocommerce_urb_it_one_hour_offset', '+1 hour') : (!empty($order->urb_it_delivery_time) ? $order->urb_it_delivery_time : apply_filters('woocommerce_urb_it_specific_time_offset', '+1 hour 15 min')));
-			
-			if(!self::validate_all_opening_hours($delivery_time)) {
-				self::log('Order #' . $order_id . ' (type ' . $delivery_type . ') got an invalid delivery time of ' . $delivery_time->format('Y-m-d H:i:s') . '.');
-			}
-			
-			$credentials = get_option(self::OPTION_CREDENTIALS, array());
-			
-			if(!$credentials) return;
-			
-			require_once(self::$path_includes . 'class-urbit.php');
-			
-			$urbit = new Urbit_Client($credentials);
-			
-			$urbit->set('retailer_reference_id', $order->get_order_number());
-			$urbit->set('delivery_type', $delivery_type);
-			$urbit->set('order_direction', 'StoreToConsumer');
-			$urbit->set('delivery_expected_at', $delivery_time);
-			$urbit->set('consumer', apply_filters('woocommerce_urb_it_consumer_fields', array(
-				'address' => array(
-					'company_name' => $order->shipping_company,
-					'street' => $order->shipping_address_1,
-					'street2' => $order->shipping_address_2,
-					'postal_code' => str_replace(' ', '', $order->shipping_postcode),
-					'city' => $order->shipping_city,
-					'country' => $order->shipping_country
-				),
-				'first_name' => $order->shipping_first_name,
-				'last_name' => $order->shipping_last_name,
-				'email' => $order->billing_email,
-				'cell_phone' => self::sanitize_phone($order->billing_phone),
-				'consumer_comment' => $order->urb_it_message
-			), $order));
-			
-			do_action('woocommerce_urb_it_before_articles_added', $urbit, $order);
-			
-			$order_total = 0;
-			
-			foreach($order->get_items() as $item_id => $item) {
-				$_product = $order->get_product_from_item($item);
 				
-				$sku = $_product->get_sku();
-				$order_total += $order->get_line_total($item);
+				if(empty($shipping_method) || isset($order->urb_it_order_id)) return;
 				
-				$urbit->add_article(array(
-					'identifier' => ($sku ? $sku : ('#' . ($_product->is_type('variation') ? $_product->variation_id : $_product->id))),
-					'quantity' => $item['qty'],
-					'description' => $this->get_item_description($item_id, $_product, $order)
-				));
-			}
-			
-			$urbit->set('total_amount_excl_vat', $order_total);
-			
-			do_action('woocommerce_urb_it_before_create_order', $urbit, $order);
-			
-			$status = $urbit->create_order();
-			
-			if($status === 200) {
-				update_post_meta($order_id, '_urb_it_order_id', $urbit->result->order_id);
+				$delivery_type = ($shipping_method == 'urb_it_one_hour') ? 'OneHour' : 'Specific';
+				$delivery_time = $this->date(($delivery_type == 'OneHour') ? $this->one_hour_offset() : (!empty($order->urb_it_delivery_time) ? $order->urb_it_delivery_time : $this->specific_time_offset()));
 				
-				if($credentials['is_test']) update_post_meta($order_id, '_urb_it_is_stage', 'yes');
+				if(!$this->validate->all_opening_hours($delivery_time)) {
+					$this->error('Order #' . $order_id . ' (type ' . $delivery_type . ') got an invalid delivery time of ' . $delivery_time->format('Y-m-d H:i:s') . '.');
+				}
 				
-				do_action('woocommerce_urb_it_order_success', $urbit->result, $order_id);
+				$order_data = array(
+					'retailer_reference_id' => $order->get_order_number(),
+					'delivery_type' => $delivery_type,
+					'order_direction' => 'StoreToConsumer',
+					'delivery_expected_at' => $delivery_time->format(self::DATE_FORMAT),
+					'consumer' => apply_filters('woocommerce_urb_it_consumer_fields', array(
+						'address' => array(
+							'company_name' => $order->shipping_company,
+							'street' => $order->shipping_address_1,
+							'street2' => $order->shipping_address_2,
+							'postal_code' => str_replace(' ', '', $order->shipping_postcode),
+							'city' => $order->shipping_city,
+							'country' => $order->shipping_country
+						),
+						'first_name' => $order->shipping_first_name,
+						'last_name' => $order->shipping_last_name,
+						'email' => $order->billing_email,
+						'cell_phone' => self::sanitize_phone($order->billing_phone),
+						'consumer_comment' => $order->urb_it_message
+					), $order),
+					'articles' => array()
+				);
 				
-				if(isset($urbit->result->delivery) && isset($urbit->result->delivery->expected_delivery_at)) {
-					$delivery_time = new DateTime($urbit->result->delivery->expected_delivery_at);
-					$delivery_time->setTimezone(new DateTimeZone('Europe/Stockholm'));
+				do_action('woocommerce_urb_it_before_articles_added', $urbit, $order);
+				
+				$order_total = 0;
+				
+				foreach($order->get_items() as $item_id => $item) {
+					$_product = $order->get_product_from_item($item);
+					
+					$sku = $_product->get_sku();
+					$order_total += $order->get_line_total($item);
+					
+					$order_data['articles'][] = array(
+						'identifier' => ($sku ? $sku : ('#' . ($_product->is_type('variation') ? $_product->variation_id : $_product->id))),
+						'quantity' => $item['qty'],
+						'description' => $this->get_item_description($item_id, $_product, $order)
+					);
+				}
+				
+				$urbit->set('total_amount_excl_vat', $order_total);
+				
+				do_action('woocommerce_urb_it_before_create_order', $urbit, $order);
+				
+				$urbit_order = $this->urbit->CreateOrder($order_data);
+				
+				update_post_meta($order_id, '_urb_it_order_id', $urbit_order->order_id);
+				update_post_meta($order_id, '_urb_it_environment', $this->setting('environment'));
+				
+				if($this->setting('environment') === 'stage') update_post_meta($order_id, '_urb_it_is_stage', 'yes');
+				
+				do_action('woocommerce_urb_it_order_success', $urbit_order, $order_id);
+				
+				if(isset($urbit_order->delivery) && isset($urbit_order->delivery->expected_delivery_at)) {
+					$delivery_time = $this->date($urbit_order->delivery->expected_delivery_at);
+					$delivery_time->setTimezone($this->timezone);
 				}
 				
 				/*if($delivery_type == 'OneHour')*/ update_post_meta($order_id, '_urb_it_delivery_time', $delivery_time->format('Y-m-d H:i'));
 				
 				if(apply_filters('woocommerce_urb_it_send_thankyou_email', true)) $order->add_order_note(sprintf(__('Thank you for choosing urb-it as shipping method. Your order is confirmed and will be delivered at %s.', self::LANG), $delivery_time->format('Y-m-d H:i')), true);
-				
-				return;
 			}
-			
-			do_action('woocommerce_urb_it_order_failure', $urbit->result, $order_id, $status);
-			
-			// Something went wrong
-			if($status === 0) $status = 'Time-out';
-			
-			$error_message = $urbit->result ? $urbit->result->developer_message : ('HTTP ' . $status);
-			
-			self::log('API error while paying order #' . $order_id . ': ' . $status . ', ' . $error_message);
-			
-			$order->add_order_note('Urb-it error: ' . $error_message);
-			wp_mail(get_option('admin_email'), __('Urb-it problem', self::LANG), sprintf(__('The problem below occured while serving order #%d. If you can\'t solve the problem, contact the urb-it support.', self::LANG), $order_id) . "\n\n" . $error_message);
+			catch(Exception $e) {
+				$this->error('Error while creating order #' . $order->get_order_number() . ': ' . $e->getMessage());
+				
+				do_action('woocommerce_urb_it_order_failure', $this->urbit->httpBody, $order_id, $status);
+				
+				$order->add_order_note('Urb-it error: ' . $e->getMessage());
+				wp_mail(get_option('admin_email'), __('Urb-it problem', self::LANG), sprintf(__('The problem below occured while serving order #%d. If you can\'t solve the problem, contact the urb-it support.', self::LANG), $order_id) . "\n\n" . $e->getMessage());
+			}
 		}
 		
 		

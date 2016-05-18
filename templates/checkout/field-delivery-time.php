@@ -1,5 +1,5 @@
 <?php
-	$min_delivery_time = self::create_datetime('+1 hour 15 min');
+	$min_delivery_time = $this->date('+1 hour 15 min');
 ?>
 
 <?php if(!$is_cart): ?>

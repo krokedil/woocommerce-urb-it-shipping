@@ -7,24 +7,24 @@
 			parent::__construct();
 			
 			// Create plugin settings menu
-			add_action('admin_menu', array(__CLASS__, 'create_menu'));
+			add_action('admin_menu', array($this, 'create_menu'));
 			
 			// Custom product field: Bulky product
-			add_action('woocommerce_product_options_dimensions', array(__CLASS__, 'inform_limits'));
-			add_action('woocommerce_product_options_dimensions', array(__CLASS__, 'bulky_product_field'));
-			add_action('woocommerce_process_product_meta', array(__CLASS__, 'bulky_product_field_save'));
+			add_action('woocommerce_product_options_dimensions', array($this, 'inform_limits'));
+			add_action('woocommerce_product_options_dimensions', array($this, 'bulky_product_field'));
+			add_action('woocommerce_process_product_meta', array($this, 'bulky_product_field_save'));
 			
 			// Notice admin if any required settings or functions are missing
-			add_action('admin_notices', array(__CLASS__, 'check_requirements'));
+			add_action('admin_notices', array($this, 'check_requirements'));
 			
-			add_action('admin_head', array(__CLASS__, 'order_status_icon'));
+			add_action('admin_head', array($this, 'order_status_icon'));
 			
 			require_once($this->path . 'includes/class-admin-settings.php');
 		}
 		
 		
 		public function create_menu() {
-			add_submenu_page('woocommerce', __('Urb-it', parent::LANG), __('Urb-it', parent::LANG), 'manage_woocommerce', 'wc-urb-it-settings', array(__CLASS__, 'page_settings'));
+			add_submenu_page('woocommerce', __('Urb-it', self::LANG), __('Urb-it', self::LANG), 'manage_woocommerce', 'wc-urb-it-settings', array($this, 'page_settings'));
 		}
 		
 		
@@ -55,11 +55,11 @@
 		
 		public function page_settings() {
 			if(!isset($_GET['urb-it-log'])) {
-				self::save_settings();
+				$this->save_settings();
 				
 				$general = get_option(self::OPTION_GENERAL, array());
 				$credentials = get_option(self::OPTION_CREDENTIALS, array());
-				$callback_url = plugin_dir_url(self::$file) . 'callback.php';
+				$callback_url = $this->url . 'callback.php';
 				
 				$weekdays = array(
 					1 => __('Monday', self::LANG),
@@ -71,7 +71,7 @@
 					7 => __('Sunday', self::LANG)
 				);
 				
-				require(self::$path_templates . 'admin/plugin-settings.php');
+				require($this->path . 'templates/admin/plugin-settings.php');
 			}
 			else {
 				if(isset($_POST['clear-log'])) {
@@ -81,7 +81,7 @@
 				
 				$log = file_get_contents(wc_get_log_file_path('urb-it'));
 				
-				require(self::$path_templates . 'admin/plugin-log.php');
+				require($this->path . 'templates/admin/plugin-log.php');
 			}
 		}
 		

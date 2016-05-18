@@ -2,13 +2,14 @@
 	class Urb_It_Postcode_Validator_Widget extends WP_Widget {
 		const LANG = WooCommerce_Urb_It::LANG;
 		
-		static $url;
+		private $plugin;
 	
 		/**
 		 * Register widget with WordPress.
 		 */
 		public function __construct() {
-			self::$url = WooCommerce_Urb_It::$url;
+			$this->plugin = WooCommerce_Urb_It::instance();
+			
 			parent::__construct(
 				'urb_it_postcode_validator_widget', // Base ID
 				__('Postcode Validator', self::LANG), // Name
@@ -29,9 +30,9 @@
 			
 			if(!empty($instance['title'])) echo $args['before_title'] . apply_filters('widget_title', $instance['title']). $args['after_title'];
 			
-			include(WooCommerce_Urb_It::$path_templates . 'postcode-validator/form.php');
+			include($this->plugin->path . 'templates/postcode-validator/form.php');
 			
-			add_action('wp_footer', array('WooCommerce_Urb_It', 'postcode_validator_assets'));
+			add_action('wp_footer', array($this->plugin->postcode_validator, 'postcode_validator_assets'));
 			
 			echo $args['after_widget'];
 		}
