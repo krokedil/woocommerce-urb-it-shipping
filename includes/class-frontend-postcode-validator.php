@@ -7,21 +7,20 @@
 		
 		
 		public function __construct() {
-			add_action('wp_ajax_urb_it_validate_postcode', array($this, 'ajax_postcode_validator'));
-			add_action('wp_ajax_nopriv_urb_it_validate_postcode', array($this, 'ajax_postcode_validator'));
-			add_action('woocommerce_single_product_summary', array($this, 'postcode_validator_product_page'), 35);
+			add_action('wc_ajax_urb_it_validate_postcode', array($this, 'ajax'));
+			add_action('woocommerce_single_product_summary', array($this, 'product_page'), 35);
 		}
 		
 		
 		// Postcode validator: Ajax
-		public function ajax_postcode_validator() {
+		public function ajax() {
 			echo (isset($_GET['postcode']) && $this->validate->postcode($_GET['postcode'])) ? '1' : '0';
 			exit;
 		}
 		
 		
 		// Postcode validator: Assets
-		public function postcode_validator_assets() {
+		public function add_assets() {
 			if($this->added_assets) return;
 			
 			$this->added_assets = true;
@@ -34,7 +33,6 @@
 					<?php include($this->path . 'assets/css/postcode-validator.css'); ?>
 				</style>
 				<script>
-					if(!ajaxurl) var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
 					<?php include($this->path . 'assets/js/postcode-validator.js'); ?>
 				</script>
 			<?php
@@ -42,7 +40,7 @@
 		
 		
 		// Postcode validator: Product page
-		public function postcode_validator_product_page() {
+		public function product_page() {
 			$general = get_option(self::OPTION_GENERAL, array());
 			
 			if(!$general || !$general['postcode-validator-product-page']) return;
@@ -58,7 +56,7 @@
 			
 			include($this->path . 'templates/postcode-validator/form.php');
 			
-			add_action('wp_footer', array($this, 'postcode_validator_assets'));
+			add_action('wp_footer', array($this, 'add_assets'));
 		}
 	}
 	

@@ -15,11 +15,15 @@
 			$max_time = clone $today;
 			$max_time->modify(self::SPECIFIC_TIME_RANGE);
 			
-			$days = WP_DEBUG ? false : get_transient('woocommerce_urb_it_delivery_days');
+			$days = apply_filters('woocommerce_urb_it_debug', false) ? false : get_transient('woocommerce_urb_it_delivery_days');
 			
 			if($days === false) {
+				$this->log('Fetching opening hours from API...');
+				
 				try {
 					$opening_hours = $this->urbit->GetOpeningHours($today->format('Y-m-d'), $max_time->format('Y-m-d'));
+					
+					$this->log('API result:', $opening_hours);
 				}
 				catch(Exception $e) {
 					$this->error('Error while fetching opening hours: ' . $e->getMessage());
@@ -27,10 +31,7 @@
 				
 				$days = array();
 				
-				$this->log('Fetched opening hours:');
-				$this->log($urbit->result);
-				
-				foreach($urbit->result as $day) {
+				foreach($opening_hours as $day) {
 					if($day->closed) continue;
 					
 					$hours = (object)array(
@@ -43,6 +44,11 @@
 				
 				set_transient('woocommerce_urb_it_delivery_days', $days, self::TRANSIENT_TTL);
 			}
+			else {
+				$this->log('Fetched opening hours from cache.');
+			}
+			
+			$this->log('Opening hours:', $days);
 			
 			return $days;
 		}

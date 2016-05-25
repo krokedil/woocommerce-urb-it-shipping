@@ -22,7 +22,7 @@
 		const UPDATE_URL = 'http://download.urb-it.com/woocommerce/update.json';
 		
 		const ORDER_MAX_WEIGHT = 10; // kg
-		const ORDER_MAX_VOLUME = 142000; // cm2 (1 liter = 1000 cm2)
+		const ORDER_MAX_VOLUME = 142000; // cm3 (1 liter = 1000 cm3)
 		
 		const OPTION_VERSION = 'wc-urb-it-version';
 		const OPTION_GENERAL = 'wc-urb-it-general';
@@ -38,21 +38,32 @@
 		const DATE_FORMAT = DateTime::RFC3339;
 		
 		private static $_instance = null;
+		private static $_modules = array();
 		private $timezone = null;
 		private $log = null;
+		private $initialized = false;
 
 		protected $update_checker;
 		
 		public $path;
 		public $url;
-		public $order;
-		public $validate;
+		#public $order;
+		#public $validate;
+		#public $opening_hours;
+		#public $coupon;
 		
 		
 		// Singelton
 		public static function instance() {
 			if(self::$_instance === null) {
 				self::$_instance = include(dirname(__FILE__) . '/includes/class-' . (is_admin() ? 'admin' : 'frontend') . '.php');
+				
+				self::$_modules = array(
+					'order' => include(dirname(__FILE__) . '/includes/class-order.php'),
+					'validate' => include(dirname(__FILE__) . '/includes/class-validate.php'),
+					'opening_hours' => include(dirname(__FILE__) . '/includes/class-opening-hours.php'),
+					'coupon' => include(dirname(__FILE__) . '/includes/class-coupon.php')
+				);
 			}
 			
 			return self::$_instance;
@@ -65,8 +76,8 @@
 			$this->url = plugin_dir_url(__FILE__);
 			
 			// Installation & plugin removal
-			register_activation_hook(__FILE__, array($this, 'install'));
-			register_uninstall_hook(__FILE__, array($this, 'uninstall'));
+			register_activation_hook(__FILE__, array(__CLASS__, 'install'));
+			register_uninstall_hook(__FILE__, array(__CLASS__, 'uninstall'));
 			
 			// Update checker
 			require_once($this->path . 'plugin-update-checker/plugin-update-checker.php');
@@ -90,10 +101,10 @@
 			// Widget
 			add_action('widgets_init', array($this, 'register_widget'));
 			
-			if(is_null($this->order)) $this->order = include($this->path . 'includes/class-order.php');
-			if(is_null($this->validate)) $this->validate = include($this->path . 'includes/class-validate.php');
-			if(is_null($this->opening_hours)) $this->opening_hours = include($this->path . 'includes/class-opening-hours.php');
-			if(is_null($this->coupon)) $this->coupon = include($this->path . 'includes/class-coupon.php');
+			#if(is_null($this->order)) $this->order = include($this->path . 'includes/class-order.php');
+			#if(is_null($this->validate)) $this->validate = include($this->path . 'includes/class-validate.php');
+			#if(is_null($this)) $this->opening_hours = include($this->path . 'includes/class-opening-hours.php');
+			#if(is_null($this->coupon)) $this->coupon = include($this->path . 'includes/class-coupon.php');
 		}
 		
 		
@@ -116,6 +127,11 @@
 					$this->error($e->getMessage());
 				}
 			}
+			elseif(isset(self::$_modules[$name])) {
+				$this->{$name} = self::$_modules[$name];
+			}
+			
+			return $this->{$name};
 		}
 		
 		
@@ -141,13 +157,13 @@
 		
 		
 		// Save the plugin version on activation, if it doesn't exist
-		public function install() {
+		public static function install() {
 			add_option(self::OPTION_VERSION, self::VERSION);
 		}
 		
 		
 		// Delete all options when the plugin is removed
-		public function uninstall() {
+		public static function uninstall() {
 			delete_option(self::OPTION_VERSION);
 		}
 		
@@ -269,8 +285,10 @@
 		
 		// Include template file
 		public function template($path, $vars = array()) {
+			$path = wc_locate_template($path . '.php', 'urb-it', $this->path . 'templates/');
+			
 			extract($vars);
-			include($this->path . 'templates/' . $path . '.php');
+			include($path);
 		}
 		
 		
@@ -285,18 +303,35 @@
 		
 		
 		// Error log
-		public function log($input, $debug_only = false) {
+		public function log() {
 			if($this->setting('log') !== 'everything') return;
 			
-			$this->error($input);
+			$this->merge_to_log(func_get_args());
 		}
 		
 		
-		public function error($input) {
-			if(!is_string($input) && !is_numeric($input)) $input = print_r($input, true);
+		public function error() {
+			$this->merge_to_log(func_get_args());
+		}
+		
+		
+		private function merge_to_log($args) {
+			ob_start();
 			
+			foreach($args as $row) {
+				if(is_string($row)) echo $row . ' ';
+				else var_dump($row);
+			}
+			
+			$this->write_to_log(ob_get_clean());
+		}
+		
+		
+		private function write_to_log($input) {
 			if(!$this->log) {
-				if(!class_exists('WC_Logger')) return;
+				if(!class_exists('WC_Logger')) {
+					return error_log($input);
+				}
 				
 				$this->log = new WC_Logger();
 			}

@@ -21,10 +21,10 @@
 		
 		blocker.block(self);
 		
-		var data = self.serialize() + '&action=urb_it_validate_postcode',
-				postcode = self.find('input[name=postcode]').val();
+		var data = self.serialize() + '&wc-ajax=urb_it_validate_postcode',
+				postcode = self.find('input[name="postcode"]').val();
 		
-		$.get(ajaxurl, data, function(valid) {
+		$.get(data, function(valid) {
 			valid = !!parseInt(valid);
 			
 			blocker.unblock(self);
@@ -60,7 +60,7 @@
 			var headline = $('.urb-it-postcode-validator .title'),
 					result = localStorage.getItem('last_postcode_result');
 			
-			$('.urb-it-postcode-validator input[name=postcode]').val(postcode);
+			$('.urb-it-postcode-validator input[name="postcode"]').val(postcode);
 			
 			if(result === 'true') {
 				headline.text(headline.data('success'));

@@ -1,5 +1,5 @@
 <?php
-	$min_delivery_time = $this->date('+1 hour 15 min');
+	$min_delivery_time = $this->date($this->specific_time_offset());
 ?>
 
 <?php if(!$is_cart): ?>
@@ -14,7 +14,7 @@
 					<select id="urb_it_date" name="urb_it_date">
 						<?php foreach($days as $day): ?>
 							<?php
-								if($onehour > $day->close) continue;
+								if($min_delivery_time > $day->close) continue;
 								
 								$is_selected = ($day->open->format('Y-m-d') === $selected_delivery_time->format('Y-m-d'));
 								$is_today = ($day->open->format('Y-m-d') === $now->format('Y-m-d'));

@@ -7,8 +7,8 @@
 			add_action('init', array($this, 'register_order_status'));
 			add_filter('wc_order_statuses', array($this, 'order_statuses'));
 			
-			add_action('woocommerce_checkout_update_order_meta', array($this, 'order_created'), 10, 2);
-			add_action('woocommerce_order_status_processing', array($this, 'order_payed'));
+			add_action('woocommerce_checkout_update_order_meta', array($this, 'save_data'), 10, 2);
+			add_action('woocommerce_order_status_processing', array($this, 'create'));
 		}
 		
 		
@@ -40,8 +40,8 @@
 		}
 		
 		
-		// Order: Created
-		public function order_created($order_id, $posted) {
+		// Order created
+		public function save_data($order_id, $posted) {
 			$delivery_time = (!empty($_POST['urb_it_date']) && !empty($_POST['urb_it_time'])) ? (esc_attr($_POST['urb_it_date']) . ' ' . esc_attr($_POST['urb_it_time'])) : WC()->session->get('urb_it_delivery_time');
 			$message = !empty($_POST['urb_it_message']) ? esc_attr($_POST['urb_it_message']) : WC()->session->get('urb_it_message');
 			
@@ -63,8 +63,8 @@
 		}
 		
 		
-		// Order: Payed
-		public function order_payed($order_id) {
+		// Order payed
+		public function create($order_id) {
 			if(apply_filters('woocommerce_urb_it_abort_submition', false)) return;
 			
 			try {
@@ -84,7 +84,7 @@
 				$delivery_type = ($shipping_method == 'urb_it_one_hour') ? 'OneHour' : 'Specific';
 				$delivery_time = $this->date(($delivery_type == 'OneHour') ? $this->one_hour_offset() : (!empty($order->urb_it_delivery_time) ? $order->urb_it_delivery_time : $this->specific_time_offset()));
 				
-				if(!$this->validate->all_opening_hours($delivery_time)) {
+				if(!$this->validate->opening_hours($delivery_time)) {
 					$this->error('Order #' . $order_id . ' (type ' . $delivery_type . ') got an invalid delivery time of ' . $delivery_time->format('Y-m-d H:i:s') . '.');
 				}
 				
@@ -92,7 +92,6 @@
 					'retailer_reference_id' => $order->get_order_number(),
 					'delivery_type' => $delivery_type,
 					'order_direction' => 'StoreToConsumer',
-					'delivery_expected_at' => $delivery_time->format(self::DATE_FORMAT),
 					'consumer' => apply_filters('woocommerce_urb_it_consumer_fields', array(
 						'address' => array(
 							'company_name' => $order->shipping_company,
@@ -105,11 +104,14 @@
 						'first_name' => $order->shipping_first_name,
 						'last_name' => $order->shipping_last_name,
 						'email' => $order->billing_email,
-						'cell_phone' => self::sanitize_phone($order->billing_phone),
+						'cell_phone' => $this->sanitize_phone($order->billing_phone),
 						'consumer_comment' => $order->urb_it_message
 					), $order),
+					'store_location' => array('id' => $this->setting('pickup_location_id')),
 					'articles' => array()
 				);
+				
+				if($delivery_type === 'Specific') $order_data['delivery_expected_at'] = $delivery_time->format(self::DATE_FORMAT);
 				
 				do_action('woocommerce_urb_it_before_articles_added', $urbit, $order);
 				
@@ -132,7 +134,7 @@
 				
 				do_action('woocommerce_urb_it_before_create_order', $urbit, $order);
 				
-				$urbit_order = $this->urbit->CreateOrder($order_data);
+				$urbit_order = $this->urbit->CreateOrder(apply_filters('woocommerce_urb_it_create_order', $order_data, $order));
 				
 				update_post_meta($order_id, '_urb_it_order_id', $urbit_order->order_id);
 				update_post_meta($order_id, '_urb_it_environment', $this->setting('environment'));
@@ -146,7 +148,7 @@
 					$delivery_time->setTimezone($this->timezone);
 				}
 				
-				/*if($delivery_type == 'OneHour')*/ update_post_meta($order_id, '_urb_it_delivery_time', $delivery_time->format('Y-m-d H:i'));
+				update_post_meta($order_id, '_urb_it_delivery_time', $delivery_time->format('Y-m-d H:i'));
 				
 				if(apply_filters('woocommerce_urb_it_send_thankyou_email', true)) $order->add_order_note(sprintf(__('Thank you for choosing urb-it as shipping method. Your order is confirmed and will be delivered at %s.', self::LANG), $delivery_time->format('Y-m-d H:i')), true);
 			}
@@ -169,7 +171,6 @@
 			if(!$metadata) return $product->get_title();
 			
 			foreach($metadata as $meta) {
-
 				// Skip hidden core fields
 				if(in_array($meta['meta_key'], apply_filters('woocommerce_hidden_order_itemmeta', array(
 					'_qty',
@@ -198,4 +199,4 @@
 		}
 	}
 	
-	new WooCommerce_Urb_It_Order;
+	return new WooCommerce_Urb_It_Order;

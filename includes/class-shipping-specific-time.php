@@ -4,23 +4,25 @@
 	
 	if(!class_exists('WC_Urb_It_Specific_Time')) {
 		class WC_Urb_It_Specific_Time extends WC_Shipping_Method {
-			private $lang;
+			const LANG = WooCommerce_Urb_It::LANG;
+			
+			private $plugin;
 			
 			
 			public function __construct() {
-				$this->lang = WooCommerce_Urb_It::LANG;
-				
 				$this->id = 'urb_it_specific_time';
-				$this->method_title = __('urb-it specific time', $this->lang);
-				$this->method_description = __('urb-it specific time allows deliveries at a specific time.', $this->lang);
+				$this->method_title = __('urb-it specific time', self::LANG);
+				$this->method_description = __('urb-it specific time allows deliveries at a specific time.', self::LANG);
 				$this->init();
 			}
 			
 			
 			public function init() {
 				// Load the settings API
-				$this->init_form_fields(); // This is part of the settings API. Override the method to add your own settings
-				$this->init_settings(); // This is part of the settings API. Loads settings you previously init.
+				$this->init_form_fields();
+				$this->init_settings();
+				
+				$this->plugin = WooCommerce_Urb_It::instance();
 				
 				// Define user set variables
 				$this->enabled = $this->get_option('enabled');
@@ -36,34 +38,34 @@
 			public function init_form_fields() {
 				$this->form_fields = array(
 					'enabled' => array(
-						'title' 		=> __('Enable/Disable', $this->lang),
+						'title' 		=> __('Enable/Disable', self::LANG),
 						'type' 			=> 'checkbox',
-						'label' 		=> __('Enable urb-it specific time', $this->lang),
+						'label' 		=> __('Enable urb-it specific time', self::LANG),
 						'default' 		=> 'yes'
 					),
 					'title' => array(
-						'title' 		=> __('Method Title', $this->lang),
+						'title' 		=> __('Method Title', self::LANG),
 						'type' 			=> 'text',
-						'description' 	=> __( 'This controls the title which the user sees during checkout.', $this->lang),
+						'description' 	=> __( 'This controls the title which the user sees during checkout.', self::LANG),
 						'default'		=> $this->method_title,
 						'desc_tip'		=> true
 					),
 					'type' => array(
-						'title'       => __('Fee Type', $this->lang),
+						'title'       => __('Fee Type', self::LANG),
 						'type'        => 'select',
-						'description' => __('How to calculate delivery charges', $this->lang),
+						'description' => __('How to calculate delivery charges', self::LANG),
 						'default'     => 'fixed',
 						'options'     => array(
-							'fixed'       => __('Fixed amount', $this->lang),
-							'percent'     => __('Percentage of cart total', $this->lang),
-							'product'     => __('Fixed amount per product', $this->lang),
+							'fixed'       => __('Fixed amount', self::LANG),
+							'percent'     => __('Percentage of cart total', self::LANG),
+							'product'     => __('Fixed amount per product', self::LANG),
 						),
 						'desc_tip'    => true,
 					),
 					'fee' => array(
-						'title' 		=> __('Price', $this->lang),
+						'title' 		=> __('Price', self::LANG),
 						'type' 			=> 'price',
-						'description' => __('What fee do you want to charge for local delivery, disregarded if you choose free. Leave blank to disable.', $this->lang),
+						'description' => __('What fee do you want to charge for local delivery, disregarded if you choose free. Leave blank to disable.', self::LANG),
 						'default'		=> 0,
 						'desc_tip'		=> true
 					)
@@ -105,12 +107,12 @@
 				if($this->enabled != 'yes') return false;
 				
 				// Check the weight of the order
-				if(!WooCommerce_Urb_It::validate_cart_weight()) return false;
+				if(!$this->plugin->validate->cart_weight()) return false;
 				
 				// Check the volume of the order
-				if(!WooCommerce_Urb_It::validate_cart_volume()) return false;
+				if(!$this->plugin->validate->cart_volume()) return false;
 				
-				$is_available = $optional_postcode ? true : WooCommerce_Urb_It::validate_postcode($package['destination']['postcode']);
+				$is_available = $optional_postcode ? true : $this->plugin->validate->postcode($package['destination']['postcode']);
 				
 				return apply_filters('woocommerce_shipping_' . $this->id . '_is_available', $is_available, $package);
 			}

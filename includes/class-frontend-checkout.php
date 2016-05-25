@@ -76,7 +76,7 @@
 				$selected_delivery_time = $this->date(WC()->session->get('urb_it_delivery_time', '+1 hour'));
 				$now = $this->date('now');
 				$onehour = $this->date('+1 hour');
-				$days = self::get_opening_hours();
+				$days = $this->opening_hours->get();
 				
 				include($this->path . 'templates/checkout/field-delivery-time.php');
 				include($this->path . 'templates/checkout/field-message.php');
@@ -91,14 +91,14 @@
 		public function validate_checkout_fields($posted) {
 			if(!isset($posted['shipping_method']) || (!in_array('urb_it_one_hour', $posted['shipping_method']) && !in_array('urb_it_specific_time', $posted['shipping_method']))) return;
 			
-			$phone = self::sanitize_phone($posted['billing_phone']);
+			$phone = $this->sanitize_phone($posted['billing_phone']);
 			
 			if(!$phone) {
-				wc_add_notice(__('Please enter a valid cellphone number.', self::LANG), 'error');
+				throw new Exception(__('Please enter a valid cellphone number.', self::LANG));
 			}
 			
-			$now = $this->date('+1 hour');
-			$now->setTime($now->format('G'), $now->format('i'), 0);
+			#$now = $this->date('+1 hour');
+			#$now->setTime($now->format('G'), $now->format('i'), 0);
 			
 			if(in_array('urb_it_specific_time', $posted['shipping_method'])) {
 				$delivery_type = 'Specific';
@@ -111,61 +111,48 @@
 				
 				if(!preg_match('/^\d{4}\-\d{2}-\d{2}$/', $date)) {
 					$valid_time = false;
-					wc_add_notice(sprintf(__('Please enter a delivery date in the format YYYY-MM-DD, ex: %s.', self::LANG), date('Y-m-d')), 'error');
+					throw new Exception(sprintf(__('Please enter a delivery date in the format YYYY-MM-DD, ex: %s.', self::LANG), date('Y-m-d')));
 				}
 				
 				if(!preg_match('/^\d{2}\:\d{2}$/', $time)) {
 					$valid_time = false;
-					wc_add_notice(sprintf(__('Please enter a delivery time in the format HH:MM, ex: %s.', self::LANG), date('H:i')), 'error');
+					throw new Exception(sprintf(__('Please enter a delivery time in the format HH:MM, ex: %s.', self::LANG), date('H:i')));
 				}
 				
 				if(!$valid_time) return;
 				
 				$delivery_time = $this->date($date . ' ' . $time);
+				$min_time = $this->date($this->specific_time_offset());
 				
-				if($delivery_time < $now) {
-					wc_add_notice(sprintf(__('Please pick a time from %s and forward.', self::LANG), $now->format('H:i')), 'error');
+				if($delivery_time < $min_time) {
+					throw new Exception(sprintf(__('Please pick a time from %s and forward.', self::LANG), $min_time->format('H:i')));
 					return;
 				}
 				if($delivery_time > $date_limit) {
-					wc_add_notice(sprintf(__('We can unfortunately not deliver this far in the future, please choose a date not later than %s.', self::LANG), date_i18n('j F', $date_limit->getTimestamp())), 'error');
+					throw new Exception(sprintf(__('We can unfortunately not deliver this far in the future, please choose a date not later than %s.', self::LANG), date_i18n('j F', $date_limit->getTimestamp())));
 					return;
 				}
 			}
 			else {
 				$delivery_type = 'OneHour';
-				$delivery_time = clone $now;
+				$delivery_time = $this->date($this->one_hour_offset());
 			}
 			
 			$postcode = isset($posted['shipping_postcode']) ? $posted['shipping_postcode'] : $posted['billing_postcode'];
 			
 			// Check the weight of the order
 			if(!$this->validate->cart_weight()) {
-				wc_add_notice(sprintf(__('As the total weight of your cart is over %d kilos, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_WEIGHT), 'error');
+				throw new Exception(sprintf(__('As the total weight of your cart is over %d kilos, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_WEIGHT));
 			}
 			
 			// Check the volume of the order
 			if(!$this->validate->cart_volume()) {
-				wc_add_notice(sprintf(__('As the total volume of your cart is over %d liters, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_VOLUME / 1000), 'error');
+				throw new Exception(sprintf(__('As the total volume of your cart is over %d liters, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_VOLUME / 1000));
 			}
 			
 			if(apply_filters('woocommerce_urb_it_skip_validation', false)) return;
 			
-			$result = $this->validate->against_urbit($delivery_time, $postcode, $delivery_type);
-			
-			if($result === true) return;
-			
-			switch($result->code) {
-				case 'RET-002':
-					wc_add_notice(__('Urb-it can unfortunately not deliver to this address.', self::LANG), 'error');
-					break;
-				case 'RET-004':
-				case 'RET-005':
-					wc_add_notice(__('We can unfortunately not deliver at this time, please choose another.', self::LANG), 'error');
-					break;
-				default:
-					wc_add_notice($result->message, 'error');
-			}
+			$this->validate->order($delivery_time, $postcode, $delivery_type);
 		}
 		
 		
