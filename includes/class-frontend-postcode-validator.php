@@ -4,6 +4,7 @@
 	
 	class WooCommerce_Urb_It_Frontend_Postcode_Validator extends WooCommerce_Urb_It_Frontend {
 		private $added_assets = false;
+		private $plugin = null;
 		
 		
 		public function __construct() {
@@ -41,9 +42,7 @@
 		
 		// Postcode validator: Product page
 		public function product_page() {
-			$general = get_option(self::OPTION_GENERAL, array());
-			
-			if(!$general || !$general['postcode-validator-product-page']) return;
+			if($this->setting('postcode_validator_product_page') !== 'yes') return;
 			
 			global $product, $woocommerce;
 			
@@ -54,7 +53,7 @@
 			
 			if($postcode) $last_status = $woocommerce->session->get('urb_it_postcode_result');
 			
-			include($this->path . 'templates/postcode-validator/form.php');
+			$this->template('postcode-validator/form', compact('postcode'));
 			
 			add_action('wp_footer', array($this, 'add_assets'));
 		}

@@ -65,7 +65,10 @@
 		
 		// Order payed
 		public function create($order_id) {
-			if(apply_filters('woocommerce_urb_it_abort_submition', false)) return;
+			if(apply_filters('woocommerce_urb_it_abort_submition', false)) {
+				$this->log('urb-it order submition aborted by filter (woocommerce_urb_it_abort_submition).');
+				return;
+			}
 			
 			try {
 				$order = wc_get_order($order_id);
@@ -79,7 +82,15 @@
 					}
 				}
 				
-				if(empty($shipping_method) || isset($order->urb_it_order_id)) return;
+				if(empty($shipping_method)) {
+					$this->log('Order #' . $order->get_order_number() . ' hasn\'t urb-it as delivery method - aborting.');
+					return;
+				}
+				
+				if(isset($order->urb_it_order_id)) {
+					$this->error('Order #' . $order->get_order_number() . ' has already been sent to urb-it (#' . $order->urb_it_order_id . ') - aborting.');
+					return;
+				}
 				
 				$delivery_type = ($shipping_method == 'urb_it_one_hour') ? 'OneHour' : 'Specific';
 				$delivery_time = $this->date(($delivery_type == 'OneHour') ? $this->one_hour_offset() : (!empty($order->urb_it_delivery_time) ? $order->urb_it_delivery_time : $this->specific_time_offset()));
@@ -113,7 +124,7 @@
 				
 				if($delivery_type === 'Specific') $order_data['delivery_expected_at'] = $delivery_time->format(self::DATE_FORMAT);
 				
-				do_action('woocommerce_urb_it_before_articles_added', $urbit, $order);
+				do_action('woocommerce_urb_it_before_articles_added', $order);
 				
 				$order_total = 0;
 				
@@ -130,11 +141,19 @@
 					);
 				}
 				
-				$urbit->set('total_amount_excl_vat', $order_total);
+				$order_data['total_amount_excl_vat'] = $order_total;
 				
-				do_action('woocommerce_urb_it_before_create_order', $urbit, $order);
+				do_action('woocommerce_urb_it_before_create_order', $order);
 				
-				$urbit_order = $this->urbit->CreateOrder(apply_filters('woocommerce_urb_it_create_order', $order_data, $order));
+				$order_data = apply_filters('woocommerce_urb_it_create_order_data', $order_data, $order);
+				
+				if(isset($order_data['beneficiary']['cell_phone'])) $order_data['beneficiary']['cell_phone'] = $this->sanitize_phone($order_data['beneficiary']['cell_phone']);
+				
+				$this->log('Creating order:', $order_data);
+				
+				$urbit_order = $this->urbit->CreateOrder($order_data);
+				
+				$this->log('Order created successfully in ' . $this->setting('environment') . ':', $urbit_order);
 				
 				update_post_meta($order_id, '_urb_it_order_id', $urbit_order->order_id);
 				update_post_meta($order_id, '_urb_it_environment', $this->setting('environment'));
@@ -158,7 +177,7 @@
 				do_action('woocommerce_urb_it_order_failure', $this->urbit->httpBody, $order_id, $status);
 				
 				$order->add_order_note('Urb-it error: ' . $e->getMessage());
-				wp_mail(get_option('admin_email'), __('Urb-it problem', self::LANG), sprintf(__('The problem below occured while serving order #%d. If you can\'t solve the problem, contact the urb-it support.', self::LANG), $order_id) . "\n\n" . $e->getMessage());
+				$this->notify_urbit('The problem below occured while serving order #' . $order->get_order_number() . '.' . "\n\n" . $e->getMessage());
 			}
 		}
 		

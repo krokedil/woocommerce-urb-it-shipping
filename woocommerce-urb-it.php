@@ -38,19 +38,12 @@
 		const DATE_FORMAT = DateTime::RFC3339;
 		
 		private static $_instance = null;
-		private static $_modules = array();
 		private $timezone = null;
 		private $log = null;
 		private $initialized = false;
-
-		protected $update_checker;
 		
-		public $path;
-		public $url;
-		#public $order;
-		#public $validate;
-		#public $opening_hours;
-		#public $coupon;
+		protected static $_modules = array();
+		protected $update_checker;
 		
 		
 		// Singelton
@@ -71,16 +64,12 @@
 		
 		
 		public function __construct() {
-			// Define paths
-			$this->path = dirname(__FILE__) . '/';
-			$this->url = plugin_dir_url(__FILE__);
-			
 			// Installation & plugin removal
 			register_activation_hook(__FILE__, array(__CLASS__, 'install'));
 			register_uninstall_hook(__FILE__, array(__CLASS__, 'uninstall'));
 			
 			// Update checker
-			require_once($this->path . 'plugin-update-checker/plugin-update-checker.php');
+			require_once($this->path . 'includes/plugin-update-checker/plugin-update-checker.php');
 			$this->update_checker = PucFactory::buildUpdateChecker(self::UPDATE_URL, __FILE__);
 			
 			// Load text domain
@@ -90,26 +79,19 @@
 			add_action('woocommerce_shipping_init', array($this, 'shipping_init'));
 			add_filter('woocommerce_shipping_methods', array($this, 'add_shipping_method'));
 			
-			// Shipping calculator
-			add_action('woocommerce_after_shipping_calculator', array($this, 'shipping_calculator'));
-			add_action('woocommerce_after_cart', array($this, 'checkout_assets'));
-			
-			// Notices
-			add_action('woocommerce_add_to_cart', array($this, 'notice_added_product'), 10, 6);
-			add_action('woocommerce_single_product_summary', array($this, 'notice_product_page'), 35);
-			
 			// Widget
 			add_action('widgets_init', array($this, 'register_widget'));
-			
-			#if(is_null($this->order)) $this->order = include($this->path . 'includes/class-order.php');
-			#if(is_null($this->validate)) $this->validate = include($this->path . 'includes/class-validate.php');
-			#if(is_null($this)) $this->opening_hours = include($this->path . 'includes/class-opening-hours.php');
-			#if(is_null($this->coupon)) $this->coupon = include($this->path . 'includes/class-coupon.php');
 		}
 		
 		
 		public function __get($name) {
-			if($name === 'urbit') {
+			if($name === 'path') {
+				$this->{$name} = dirname(__FILE__) . '/';
+			}
+			elseif($name === 'url') {
+				$this->{$name} = plugin_dir_url(__FILE__);
+			}
+			elseif($name === 'urbit') {
 				try {
 					if(!class_exists('UrbRequest')) {
 						require(dirname(__FILE__) . '/includes/sdk/UrbRequest.php');
@@ -195,63 +177,6 @@
 		}
 		
 		
-		// User notice: Product page
-		public function notice_product_page() {
-			$general = get_option(self::OPTION_GENERAL, array());
-			
-			if(!$general || !$general['notice-product-page']) return;
-			
-			global $product;
-			
-			if($this->validate->product_volume($product) && $this->validate->product_weight($product)) return;
-			
-			?><p style="color: #ff3d4b;"><?php _e('This product can\'t be delivered by urb-it.', self::LANG); ?></p><?php
-		}
-		
-		
-		// User notice: Added product
-		public function notice_added_product($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data) {
-			$general = get_option(self::OPTION_GENERAL, array());
-			
-			if(!$general || !$general['notice-added-product']) return;
-			
-			WC()->cart->calculate_totals();
-			
-			if(!$this->validate->cart_weight()) {
-				wc_add_notice(sprintf(__('Your cart\'s total weight exceeds %d kilos and can\'t be delivered by urb-it.', self::LANG), self::ORDER_MAX_WEIGHT), 'notice');
-			}
-			elseif(!$this->validate->cart_volume()) {
-				wc_add_notice(sprintf(__('Your cart\'s total volume exceeds %d liters and can\'t be delivered by urb-it.', self::LANG), self::ORDER_MAX_VOLUME / 1000), 'notice');
-			}
-			elseif(!$this->validate->cart_bulkiness()) {
-				wc_add_notice(__('Your cart contains a bulky product and can\'t be delivered by urb-it.', self::LANG), 'notice');
-			}
-		}
-		
-		
-		// Shipping calculator
-		public function shipping_calculator() {
-			$shipping_method = WC()->session->get('chosen_shipping_methods', array(get_option('woocommerce_default_shipping_method')));
-			
-			if(!in_array('urb_it_specific_time', $shipping_method) && !in_array('urb_it_one_hour', $shipping_method)) return;
-			
-			if(!empty($_POST['urb_it_date']) && !empty($_POST['urb_it_time'])) {
-				WC()->session->set('urb_it_delivery_time', esc_attr($_POST['urb_it_date']) . ' ' . esc_attr($_POST['urb_it_time']));
-			}
-			
-			if(!empty($_POST['urb_it_message'])) {
-				WC()->session->set('urb_it_message', esc_attr($_POST['urb_it_message']));
-			}
-			
-			?><form class="woocommerce-shipping-calculator" action="<?php echo esc_url( WC()->cart->get_cart_url() ); ?>" method="post"><?php
-			
-			self::checkout_fields(true);
-			
-			?><p><input class="button" type="submit" name="calc_shipping" value="<?php _e('Save', self::LANG); ?>" /></p><?php
-			?></form><?php
-		}
-		
-		
 		// Create a DateTime object with the correct timezone
 		public function create_datetime($string) {
 			if($this->timezone === null) {
@@ -299,6 +224,11 @@
 			if(strncmp($phone, '07', 2) !== 0 || strlen($phone) !== 10) return false;
 			
 			return $phone;
+		}
+		
+		
+		public function notify_urbit($message) {
+			return wp_mail('support@urb-it.com', 'Problem at ' . site_url('/'), $message);
 		}
 		
 		

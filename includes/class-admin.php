@@ -7,7 +7,7 @@
 			parent::__construct();
 			
 			// Create plugin settings menu
-			add_action('admin_menu', array($this, 'create_menu'));
+			add_action('admin_menu', array($this, 'add_menu_item'));
 			
 			// Custom product field: Bulky product
 			add_action('woocommerce_product_options_dimensions', array($this, 'inform_limits'));
@@ -15,7 +15,7 @@
 			add_action('woocommerce_process_product_meta', array($this, 'bulky_product_field_save'));
 			
 			// Notice admin if any required settings or functions are missing
-			add_action('admin_notices', array($this, 'check_requirements'));
+			add_action('admin_notices', array($this, 'notices'));
 			
 			add_action('admin_head', array($this, 'order_status_icon'));
 			
@@ -23,81 +23,42 @@
 		}
 		
 		
-		public function create_menu() {
-			add_submenu_page('woocommerce', __('Urb-it', self::LANG), __('Urb-it', self::LANG), 'manage_woocommerce', 'wc-urb-it-settings', array($this, 'page_settings'));
+		public function add_menu_item() {
+			add_submenu_page('woocommerce', __('Urb-it', self::LANG), __('Urb-it', self::LANG), 'manage_woocommerce', $this->settings_url(false), '');
 		}
 		
 		
-		public function check_requirements($foobar) {
+		public function notices() {
 			$screen = get_current_screen();
 			
-			if($screen->id == 'woocommerce_page_wc-urb-it-settings') return;
-			
-			if(!function_exists('curl_version')) {
-				?>
-					<div class="error">
-						<p><?php _e('Urb-it requires cURL to work. Please contact your hosting provider or urb-it for help.', self::LANG); ?></p>
-					</div>
-				<?php
-				return;
-			}
-			
-			$credentials = get_option(self::OPTION_CREDENTIALS, array());
-			
-			if(!empty($credentials['consumer_key']) && !empty($credentials['consumer_secret']) && !empty($credentials['token']) && !empty($credentials['location_id'])) return;
-			?>
-				<div class="update-nag">
-					<p><?php echo sprintf(__('You have to <a href="%s">set up some settings</a> before your customers can use urb-it\'s shipping methods.', self::LANG), admin_url('admin.php?page=wc-urb-it-settings')); ?></p>
-				</div>
-			<?php
-		}
-		
-		
-		public function page_settings() {
-			if(!isset($_GET['urb-it-log'])) {
-				$this->save_settings();
-				
-				$general = get_option(self::OPTION_GENERAL, array());
-				$credentials = get_option(self::OPTION_CREDENTIALS, array());
-				$callback_url = $this->url . 'callback.php';
-				
-				$weekdays = array(
-					1 => __('Monday', self::LANG),
-					2 => __('Tuesday', self::LANG),
-					3 => __('Wednesday', self::LANG),
-					4 => __('Thursday', self::LANG),
-					5 => __('Friday', self::LANG),
-					6 => __('Saturday', self::LANG),
-					7 => __('Sunday', self::LANG)
-				);
-				
-				require($this->path . 'templates/admin/plugin-settings.php');
-			}
-			else {
-				if(isset($_POST['clear-log'])) {
-					$logger = new WC_Logger();
-					$logger->clear('urb-it');
+			if($screen->id !== 'woocommerce_page_wc-settings' || $_GET['tab'] !== 'urb_it') {
+				if(!function_exists('curl_version')) {
+					?>
+						<div class="notice notice-error">
+							<p><?php _e('Urb-it requires cURL to work. Please contact your hosting provider or urb-it for help.', self::LANG); ?></p>
+						</div>
+					<?php
+					return;
 				}
 				
-				$log = file_get_contents(wc_get_log_file_path('urb-it'));
+				$credentials = get_option(self::OPTION_CREDENTIALS, array());
 				
-				require($this->path . 'templates/admin/plugin-log.php');
-			}
-		}
-		
-		
-		public function save_settings() {
-			if(!isset($_POST['submit']) || !current_user_can('manage_woocommerce')) return;
-			
-			if(isset($_POST['general'])) {
-				update_option(self::OPTION_GENERAL, array_map('esc_attr', $_POST['general']));
+				if(!$this->setting('store_key') || !$this->setting('shared_secret')) {
+					?>
+						<div class="notice notice-warning">
+							<p><?php echo sprintf(__('You have to <a href="%s">set up some settings</a> before your customers can use urb-it\'s shipping methods.', self::LANG), $this->settings_url()); ?></p>
+						</div>
+					<?php
+				}
 			}
 			
-			if(isset($_POST['credentials'])) {
-				update_option(self::OPTION_CREDENTIALS, array_map('trim', $_POST['credentials']));
+			if($this->setting('environment') === 'prod' && $this->setting('log') === 'everything') {
+				?>
+					<div class="notice notice-warning">
+						<p><?php echo sprintf(__('You are in production environment and are currently logging everything, which isn\'t recommended. Please set the logging option to "%s" in <a href="%s">the settings</a>.', self::LANG), __('Only errors', self::LANG), $this->settings_url()); ?></p>
+					</div>
+				<?php
 			}
-			
-			add_settings_error('wc-urb-it-settings', 'settings_updated', __('Changes saved successfully.', self::LANG), 'updated');
 		}
 		
 		
@@ -132,6 +93,13 @@
 					}
 				</style>
 			<?php
+		}
+		
+		
+		public function settings_url($absolute = true) {
+			$path = 'admin.php?page=wc-settings&tab=urb_it';
+			
+			return $absolute ? admin_url($path) : $path;
 		}
 	}
 	

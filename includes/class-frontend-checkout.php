@@ -7,9 +7,9 @@
 		
 		
 		public function __construct() {
-			add_action('woocommerce_review_order_after_shipping', array($this, 'checkout_fields'));
-			add_action('woocommerce_after_checkout_validation', array($this, 'validate_checkout_fields'));
-			add_action('woocommerce_after_checkout_form', array($this, 'checkout_assets'));
+			add_action('woocommerce_review_order_after_shipping', array($this, 'fields'));
+			add_action('woocommerce_after_checkout_validation', array($this, 'validate_fields'));
+			add_action('woocommerce_after_checkout_form', array($this, 'add_assets'));
 			
 			// Notices
 			add_action('woocommerce_before_checkout_form', array($this, 'notice_checkout'));
@@ -20,40 +20,23 @@
 		
 		// User notice: Checkout (and cart)
 		public function notice_checkout() {
-			$general = get_option(self::OPTION_GENERAL, array());
+			if($this->setting('notice_checkout') !== 'yes') return;
 			
-			if(!$general || !$general['notice-checkout']) return;
-			
-			$is_too_heavy = !$this->validate->cart_weight();
-			$is_too_big = !$this->validate->cart_volume();
-			$has_bulky_product = !$this->validate->cart_bulkiness();
-			
-			if($is_too_heavy || $is_too_big || $has_bulky_product) {
-				?><div class="woocommerce-error"><?php
-				
-				if($is_too_heavy) {
-					echo sprintf(__('As the total weight of your cart is over %d kilos, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_WEIGHT);
-				}
-				elseif($is_too_big) {
-					echo sprintf(__('As the total volume of your cart is over %d liters, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_VOLUME / 1000);
-				}
-				elseif($has_bulky_product) {
-					_e('As your cart contains a bulky product, it can unfortunately not be delivered by urb-it.', self::LANG);
-				}
-	
-				?></div><?php
+			if(!$this->validate->cart_weight()) {
+				wc_add_notice(sprintf(__('As the total weight of your cart is over %d kilos, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_WEIGHT), 'notice');
+			}
+			elseif(!$this->validate->cart_volume()) {
+				wc_add_notice(sprintf(__('As the total volume of your cart is over %d liters, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_VOLUME / 1000), 'notice');
+			}
+			elseif(!$this->validate->cart_bulkiness()) {
+				wc_add_notice(__('As your cart contains a bulky product, it can unfortunately not be delivered by urb-it.', self::LANG), 'notice');
 			}
 		}
 		
 		
 		// User notice: Wrong postcode
 		public function notice_checkout_shipping() {
-			if(empty($_POST['s_postcode'])) return;
-			
-			$general = get_option(self::OPTION_GENERAL, array());
-			
-			if(!$general || !$general['notice-checkout']) return;
-			
+			if(empty($_POST['s_postcode']) || $this->setting('notice_checkout') !== 'yes') return;
 			if($this->validate->postcode($_POST['s_postcode'])) return;
 			?>
 				<tr class="urb-it-shipping">
@@ -65,30 +48,33 @@
 		
 		
 		// Checkout: Fields
-		public function checkout_fields($is_cart = false) {
+		public function fields($is_cart = false) {
 			$shipping_method = WC()->session->get('chosen_shipping_methods', array(get_option('woocommerce_default_shipping_method')));
+			
+			$this->log('Chosen shipping method:', $shipping_method);
 			
 			if(empty($shipping_method)) return;
 			
 			$message = WC()->session->get('urb_it_message');
 			
 			if(in_array('urb_it_specific_time', $shipping_method)) {
-				$selected_delivery_time = $this->date(WC()->session->get('urb_it_delivery_time', '+1 hour'));
-				$now = $this->date('now');
-				$onehour = $this->date('+1 hour');
-				$days = $this->opening_hours->get();
+				$this->template('checkout/field-delivery-time', array(
+					'is_cart' => $is_cart,
+					'selected_delivery_time' => $this->date(WC()->session->get('urb_it_delivery_time', $this->specific_time_offset())),
+					'now' => $this->date('now'),
+					'days' => $this->opening_hours->get()
+				));
 				
-				include($this->path . 'templates/checkout/field-delivery-time.php');
-				include($this->path . 'templates/checkout/field-message.php');
+				$this->template('checkout/field-message', compact('is_cart', 'message'));
 			}
 			elseif(in_array('urb_it_one_hour', $shipping_method)) {
-				include($this->path . 'templates/checkout/field-message.php');
+				$this->template('checkout/field-message', compact('is_cart', 'message'));
 			}
 		}
 		
 		
 		// Validate: Checkout fields
-		public function validate_checkout_fields($posted) {
+		public function validate_fields($posted) {
 			if(!isset($posted['shipping_method']) || (!in_array('urb_it_one_hour', $posted['shipping_method']) && !in_array('urb_it_specific_time', $posted['shipping_method']))) return;
 			
 			$phone = $this->sanitize_phone($posted['billing_phone']);
@@ -150,14 +136,17 @@
 				throw new Exception(sprintf(__('As the total volume of your cart is over %d liters, it can unfortunately not be delivered by urb-it.', self::LANG), self::ORDER_MAX_VOLUME / 1000));
 			}
 			
-			if(apply_filters('woocommerce_urb_it_skip_validation', false)) return;
+			if(apply_filters('woocommerce_urb_it_skip_validation', false)) {
+				$this->log('Order validation skipped with filter ("woocommerce_urb_it_skip_validation") - aborting.');
+				return;
+			}
 			
 			$this->validate->order($delivery_time, $postcode, $delivery_type);
 		}
 		
 		
 		// Checkout: Assets
-		public function checkout_assets() {
+		public function add_assets() {
 			if(!apply_filters('woocommerce_urb_it_add_checkout_assets', true) || $this->added_assets) return;
 			?>
 			<style>

@@ -14,7 +14,11 @@
 			else $valid = true;
 			
 			// Please don't use this filter without urb-it's knowledge
-			return apply_filters('woocommerce_urb_it_valid_product_weight', $valid, $product);
+			$valid = apply_filters('woocommerce_urb_it_valid_product_weight', $valid, $product);
+			
+			if(!$valid) $this->log('Product #' . $product->id . ' has invalid weight.');
+			
+			return $valid;
 		}
 		
 		
@@ -24,7 +28,11 @@
 			else $valid = true;
 			
 			// Please don't use this filter without urb-it's knowledge
-			return apply_filters('woocommerce_urb_it_valid_product_volume', $valid, $product);
+			$valid = apply_filters('woocommerce_urb_it_valid_product_volume', $valid, $product);
+			
+			if(!$valid) $this->log('Product #' . $product->id . ' has invalid volume.');
+			
+			return $valid;
 		}
 		
 		
@@ -34,7 +42,11 @@
 			else $valid = true;
 			
 			// Please don't use this filter without urb-it's knowledge
-			return apply_filters('woocommerce_urb_it_valid_cart_weight', $valid);
+			$valid = apply_filters('woocommerce_urb_it_valid_cart_weight', $valid);
+			
+			if(!$valid) $this->log('Cart has invalid weight.');
+			
+			return $valid;
 		}
 		
 		
@@ -52,7 +64,11 @@
 			else $valid = true;
 			
 			// Please don't use this filter without urb-it's knowledge
-			return apply_filters('woocommerce_urb_it_valid_cart_volume', $valid);
+			$valid = apply_filters('woocommerce_urb_it_valid_cart_volume', $valid);
+			
+			if(!$valid) $this->log('Cart has invalid volume.');
+			
+			return $valid;
 		}
 		
 		
@@ -61,7 +77,10 @@
 			foreach(WC()->cart->get_cart() as $item) {
 				$_product = $item['data'];
 				
-				if($_product->urb_it_bulky) return false;
+				if($_product->urb_it_bulky) {
+					$this->log('Cart contains a bulky product.');
+					return false;
+				}
 			}
 			
 			return true;
@@ -78,6 +97,7 @@
 				if($delivery_time >= $day->open && $delivery_time <= $day->close) return true;
 			}
 			
+			$this->log('Invalid delivery time - the store is closed. Input: ' . $delivery_time->format('Y-m-d H:i:s'));
 			return false;
 		}
 		
@@ -125,7 +145,11 @@
 			try {
 				do_action('woocommerce_urb_it_before_validate_order', $urbit);
 				
-				$urbit_result = $this->urbit->ValidateDelivery(apply_filters('woocommerce_urb_it_validate_order', $order_data, $order));
+				$order_data = apply_filters('woocommerce_urb_it_validate_order_data', $order_data);
+				
+				$this->log('Validating order data:', $order_data);
+				
+				$urbit_result = $this->urbit->ValidateDelivery($order_data);
 				
 				return true;
 			}
@@ -153,7 +177,11 @@
 		
 		public function postcode($postcode) {
 			try {
-				return $this->urbit->ValidatePostalCode($postcode);
+				$valid = $this->urbit->ValidatePostalCode($postcode);
+				
+				if(!$valid) $this->log('Invalid postcode: ' . $postcode);
+				
+				return $valid;
 			}
 			catch(Exception $e) {
 				$this->log('Error while validating postcode: ' . $e->getMessage());

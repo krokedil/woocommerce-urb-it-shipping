@@ -48,8 +48,6 @@
 				$this->log('Fetched opening hours from cache.');
 			}
 			
-			$this->log('Opening hours:', $days);
-			
 			return $days;
 		}
 		

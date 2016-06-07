@@ -21,7 +21,7 @@
 		
 		blocker.block(self);
 		
-		var data = self.serialize() + '&wc-ajax=urb_it_validate_postcode',
+		var data = '?' + self.serialize() + '&wc-ajax=urb_it_validate_postcode',
 				postcode = self.find('input[name="postcode"]').val();
 		
 		$.get(data, function(valid) {
