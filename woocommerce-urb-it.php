@@ -19,7 +19,7 @@
 		const LANG = 'woocommerce-urb-it';
 		
 		const COMPANY_URL = 'http://urb-it.com/';
-		const UPDATE_URL = 'http://download.urb-it.com/woocommerce/woocommerce-urb-it/update.json';
+		const UPDATE_URL = 'https://download.urb-it.com/woocommerce/woocommerce-urb-it/update.json';
 		
 		const ORDER_MAX_WEIGHT = 10; // kg
 		const ORDER_MAX_VOLUME = 142000; // cm3 (1 liter = 1000 cm3)
