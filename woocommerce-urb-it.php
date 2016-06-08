@@ -97,12 +97,6 @@
 						require(dirname(__FILE__) . '/includes/sdk/UrbRequest.php');
 					}
 					
-					$credentials = get_option(self::OPTION_CREDENTIALS, array());
-					
-					if(!$credentials) {
-						throw new Exception('Could not fetch credentials.');
-					}
-					
 					$this->{$name} = new UrbRequest($this->setting('store_key'), $this->setting('shared_secret'), ($this->setting('environment') === 'stage'));
 				}
 				catch(Exception $e) {

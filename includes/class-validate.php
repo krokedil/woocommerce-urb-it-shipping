@@ -143,13 +143,15 @@
 			}
 			
 			try {
-				do_action('woocommerce_urb_it_before_validate_order', $urbit);
+				do_action('woocommerce_urb_it_before_validate_order', $this->urbit);
 				
 				$order_data = apply_filters('woocommerce_urb_it_validate_order_data', $order_data);
 				
-				$this->log('Validating order data:', $order_data);
+				$this->log('Validating order data:', $this->urbit->storeKey, $order_data);
 				
 				$urbit_result = $this->urbit->ValidateDelivery($order_data);
+				
+				$this->log('Validation result:', $this->urbit->httpStatus, $this->urbit->httpBody);
 				
 				return true;
 			}

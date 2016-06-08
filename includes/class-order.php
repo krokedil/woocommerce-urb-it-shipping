@@ -124,7 +124,7 @@
 				
 				if($delivery_type === 'Specific') $order_data['delivery_expected_at'] = $delivery_time->format(self::DATE_FORMAT);
 				
-				do_action('woocommerce_urb_it_before_articles_added', $order);
+				do_action('woocommerce_urb_it_before_articles_added', $order, $this->urbit);
 				
 				$order_total = 0;
 				
@@ -143,13 +143,13 @@
 				
 				$order_data['total_amount_excl_vat'] = $order_total;
 				
-				do_action('woocommerce_urb_it_before_create_order', $order);
+				do_action('woocommerce_urb_it_before_create_order', $this->urbit, $order);
 				
 				$order_data = apply_filters('woocommerce_urb_it_create_order_data', $order_data, $order);
 				
 				if(isset($order_data['beneficiary']['cell_phone'])) $order_data['beneficiary']['cell_phone'] = $this->sanitize_phone($order_data['beneficiary']['cell_phone']);
 				
-				$this->log('Creating order:', $order_data);
+				$this->log('Creating order:', $this->urbit->storeKey, $order_data);
 				
 				$urbit_order = $this->urbit->CreateOrder($order_data);
 				

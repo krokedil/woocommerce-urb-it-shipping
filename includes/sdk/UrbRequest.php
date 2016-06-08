@@ -3,8 +3,8 @@
 		const PROD_BASE_URL = 'https://retailer-api.urb-it.com/api/';
 		const STAGE_BASE_URL = 'https://stage-retailer-api.urb-it.com/api/';
 		
-		protected $storeKey;
-		protected $sharedSecret;
+		public $storeKey;
+		public $sharedSecret;
 		protected $stage = false;
 		protected $baseUrl;
 		

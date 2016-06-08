@@ -23,6 +23,10 @@
 				try {
 					$opening_hours = $this->urbit->GetOpeningHours($today->format('Y-m-d'), $max_time->format('Y-m-d'));
 					
+					if(!$opening_hours) {
+						throw new Exception('Empty result');
+					}
+					
 					$this->log('API result:', $opening_hours);
 				}
 				catch(Exception $e) {
