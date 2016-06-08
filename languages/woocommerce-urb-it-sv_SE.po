@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Urb-it Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Tue Feb 17 2015 18:41:46 GMT+0100 (Västeuropa, normaltid)\n"
-"PO-Revision-Date: Wed May 11 2016 14:11:53 GMT+0200 (Västeuropa, sommartid)\n"
+"PO-Revision-Date: Wed Jun 08 2016 15:53:11 GMT+0200 (Västeuropa, sommartid)\n"
 "Last-Translator: Ivar <test@webbmekanikern.se>\n"
 "Language-Team: \n"
 "Language: Swedish\n"
@@ -32,7 +32,7 @@ msgstr ""
 
 #. Description of the plugin
 msgid "Let your customers choose urb-it as shipping method."
-msgstr ""
+msgstr "Låt dina kunder välja urb-it som leveransmetod."
 
 #. Author of the plugin
 msgid "Webbmekanikern"
@@ -42,274 +42,93 @@ msgstr ""
 msgid "http://www.webbmekanikern.se"
 msgstr ""
 
-#: ../templates/admin/plugin-settings.php:15
-msgid "Consumer key"
+#: ../includes/class-admin-settings.php:14
+msgid "urb-it"
 msgstr ""
 
-#: ../templates/admin/plugin-settings.php:19
-msgid "Consumer secret"
+#: ../includes/class-admin-settings.php:43
+msgid "Notice: Undeliverable Product"
+msgstr "Notis: Olevererbar produkt"
+
+#: ../includes/class-admin-settings.php:50
+msgid "Notice: Exceeded Cart Limit"
+msgstr "Notis: Överskriden varukorg"
+
+#: ../includes/class-admin-settings.php:57
+msgid "Notice: Undeliverable Order"
+msgstr "Notis: Olevererbar beställning"
+
+#: ../includes/class-admin-settings.php:82
+msgid "Technical Settings"
+msgstr "Tekniska inställningar"
+
+#: ../includes/class-admin-settings.php:86
+msgid "Environment"
+msgstr "Miljö"
+
+#: ../includes/class-admin-settings.php:89
+msgid "Production"
 msgstr ""
 
-#: ../templates/admin/plugin-settings.php:23
-msgid "Token"
+#: ../includes/class-admin-settings.php:90
+msgid "Stage"
 msgstr ""
 
-#: ../templates/admin/plugin-settings.php:27
-msgid "Pickup location ID"
+#: ../includes/class-admin-settings.php:96
+msgid "Log"
+msgstr "Logg"
+
+#: ../includes/class-admin-settings.php:99 ../includes/class-admin.php:58
+msgid "Only errors"
+msgstr "Bara fel"
+
+#: ../includes/class-admin-settings.php:100
+msgid "Everything"
+msgstr "Allt"
+
+#: ../includes/class-admin-settings.php:117
+#, php-format
+msgid "%s Credentials"
+msgstr "%s-uppgifter"
+
+#: ../includes/class-admin-settings.php:117
+msgid "active"
+msgstr "aktiv"
+
+#: ../includes/class-admin-settings.php:121
+msgid "Store Key"
 msgstr ""
 
-#: ../includes/class-admin.php:21 ../includes/class-admin.php:21
+#: ../includes/class-admin-settings.php:127
+msgid "Shared Secret"
+msgstr ""
+
+#: ../includes/class-admin-settings.php:133
+msgid "Pickup Location ID"
+msgstr ""
+
+#: ../includes/class-admin-settings.php:135
+msgid "Leave empty to use the default ID."
+msgstr "Lämna tomt för att använda standard-ID:t."
+
+#: ../includes/class-admin.php:27 ../includes/class-admin.php:27
 msgid "Urb-it"
 msgstr ""
 
-#: ../includes/class-shipping-one-hour.php:14
-msgid "Now"
-msgstr "Nu"
-
-#: ../includes/class-shipping-one-hour.php:15
-msgid "Allows deliveries now."
-msgstr "Möjliggör överlämning nu."
-
-#: ../includes/class-shipping-one-hour.php:41
-msgid "Enable Now"
-msgstr "Aktivera Nu."
+#: ../includes/class-admin.php:58
+#, php-format
+msgid ""
+"You are in production environment and are currently logging everything, "
+"which isn't recommended. Please set the logging option to \"%s\" in <a "
+"href=\"%s\">the settings</a>."
+msgstr ""
+"Ni är i produktionsmiljö och loggar just nu allt, vilket inte är "
+"rekommenderat. Vänligen sätt loggen till \"%s\" i <a "
+"href=\"%s\">inställningarna</a>."
 
 #: ../includes/class-shipping-specific-time.php:14
 msgid "urb-it specific time"
-msgstr ""
-
-#: ../woocommerce-urb-it.php:154 ../woocommerce-urb-it.php:172
-msgid "Picked up"
-msgstr "Upplockad"
-
-#: ../woocommerce-urb-it.php:159
-#, php-format
-msgid "Picked up <span class=\"count\">(%s)</span>"
-msgid_plural "Picked up <span class=\"count\">(%s)</span>"
-msgstr[0] "Upplockad <span class=\"count\">(%s)</span>"
-msgstr[1] "Upplockad <span class=\"count\">(%s)</span>"
-
-#: ../woocommerce-urb-it.php:206
-msgid "This product can't be delivered by urb-it."
-msgstr "Den här produkten kan inte levereras av urb-it."
-
-#: ../woocommerce-urb-it.php:219
-#, php-format
-msgid "Your cart's total weight exceeds %d kilos and can't be delivered by urb-it."
-msgstr ""
-"Din varukorgs totala vikt överskrider %d kg och kan därför inte bli "
-"levererad av urb-it."
-
-#: ../woocommerce-urb-it.php:222
-#, php-format
-msgid "Your cart's total volume exceeds %d liters and can't be delivered by urb-it."
-msgstr ""
-"Din varukorg totala volym överskrider %d liter och kan därför inte bli "
-"levererad av urb-it."
-
-#: ../woocommerce-urb-it.php:225 ../woocommerce-urb-it.php:811
-msgid "Your cart contains a bulky product and can't be delivered by urb-it."
-msgstr ""
-"Din varukorg innehåller en skrymmande produkt och kan därför inte levereras "
-"av urb-it."
-
-#: ../woocommerce-urb-it.php:244 ../woocommerce-urb-it.php:726
-#, php-format
-msgid ""
-"As the total weight of your cart is over %d kilos, it can unfortunately not "
-"be delivered by urb-it."
-msgstr ""
-"Eftersom den totala vikten av din varukorg är över %d kg kan den tyvärr inte "
-"bli levererad av urb-it."
-
-#: ../woocommerce-urb-it.php:247 ../woocommerce-urb-it.php:731
-#, php-format
-msgid ""
-"As the total volume of your cart is over %d liters, it can unfortunately not "
-"be delivered by urb-it."
-msgstr ""
-"Eftersom den totala volymen av din varukorg är över %d liter kan den tyvärr "
-"inte bli levererad av urb-it."
-
-#: ../woocommerce-urb-it.php:250
-msgid ""
-"As your cart contains a bulky product, it can unfortunately not be delivered "
-"by urb-it."
-msgstr ""
-"Eftersom din varukorg innehåller en skrymmande produkt kan den tyvärr inte "
-"bli levererad av urb-it."
-
-#: ../woocommerce-urb-it.php:270
-msgid ""
-"As the delivery location is outside urb-it's availability zone, urb-it is "
-"disabled for this order."
-msgstr ""
-"Eftersom leveransadressen ligger utanför urb-it's område är urb-it "
-"inaktiverat för denna order."
-
-#: ../woocommerce-urb-it.php:334
-msgid "Save"
-msgstr "Spara"
-
-#: ../woocommerce-urb-it.php:350
-#, php-format
-msgid "Urb-it delivery time: %s"
-msgstr "Urb-it leveranstid: %s"
-
-#: ../woocommerce-urb-it.php:357
-#, php-format
-msgid "Urb-it message: %s"
-msgstr "Urb-it meddelande: %s"
-
-#: ../woocommerce-urb-it.php:446
-#, php-format
-msgid ""
-"Thank you for choosing urb-it as shipping method. Your order is confirmed "
-"and will be delivered at %s."
-msgstr ""
-"Tack för att du väljer urb-it för din leverans. Din order är bekräftad och "
-"kommer bli levererad %s."
-
-#: ../woocommerce-urb-it.php:461
-msgid "Urb-it problem"
-msgstr "Problem med urb-it"
-
-#: ../woocommerce-urb-it.php:461
-#, php-format
-msgid ""
-"The problem below occured while serving order #%d. If you can't solve the "
-"problem, contact the urb-it support."
-msgstr ""
-"Problemet nedan uppstod för order #%d. Vänligen kontakta urb-it's support om "
-"du inte kan lösa problemet på egen hand."
-
-#: ../woocommerce-urb-it.php:679
-msgid "Please enter a valid cellphone number."
-msgstr "Vänligen ange ett giltigt mobilnummer."
-
-#: ../woocommerce-urb-it.php:696
-#, php-format
-msgid "Please enter a delivery date in the format YYYY-MM-DD, ex: %s."
-msgstr "Vänligen ange ett leveransdatum i formatet ÅÅÅÅ-MM-DD, ex: %s."
-
-#: ../woocommerce-urb-it.php:701
-#, php-format
-msgid "Please enter a delivery time in the format HH:MM, ex: %s."
-msgstr "Vänligen ange en leveranstid i formatet TT:MM, ex: %s."
-
-#: ../woocommerce-urb-it.php:709
-#, php-format
-msgid "Please pick a time from %s and forward."
-msgstr "Vänligen välj en tid från %s och framåt."
-
-#: ../woocommerce-urb-it.php:713
-#, php-format
-msgid ""
-"We can unfortunately not deliver this far in the future, please choose a "
-"date not later than %s."
-msgstr ""
-"Vi kan tyvärr inte leverera så här långt fram i tiden, vänligen välj ett "
-"datum som inte är senare än %s."
-
-#: ../woocommerce-urb-it.php:742
-msgid "Urb-it can unfortunately not deliver to this address."
-msgstr "Urb-it kan tyvärr inte leverera till denna adress."
-
-#: ../woocommerce-urb-it.php:746
-msgid "We can unfortunately not deliver at this time, please choose another."
-msgstr "Vi kan tyvärr inte leverera denna tid, vänligen välj en annan."
-
-#: ../woocommerce-urb-it.php:818
-msgid ""
-"Your cart contains a product that's out of stock and can't be delivered by "
-"urb-it."
-msgstr ""
-"Din varukorg innehåller en produkt som är slut i lager, och kan därför inte "
-"levereras av urb-it."
-
-#: ../templates/admin/plugin-settings.php:2
-msgid "Settings for Urb-it"
-msgstr "Inställningar för urb-it"
-
-#: ../templates/admin/plugin-settings.php:10
-msgid "API Credentials"
-msgstr "API-uppgifter"
-
-#: ../templates/admin/plugin-settings.php:11
-msgid "These keys are available in the Retailer portal."
-msgstr "Dessa nycklar finns i Retailer-portalen."
-
-#: ../templates/admin/plugin-settings.php:32
-msgid "Callback URL"
-msgstr "Callback-URL"
-
-#: ../templates/admin/plugin-settings.php:33
-msgid "Copy this URL and put it as callback URL in the Retailer portal."
-msgstr "Kopiera denna URL och sätt den som callback-URL i Retailer-portalen."
-
-#: ../templates/admin/plugin-settings.php:37
-msgid "Test environment"
-msgstr "Testmiljö"
-
-#: ../templates/admin/plugin-settings.php:39
-msgid "Enable test mode"
-msgstr "Aktivera testläge"
-
-#: ../templates/admin/plugin-settings.php:47
-msgid "General settings"
-msgstr "Allmäna inställningar"
-
-#: ../templates/admin/plugin-settings.php:51
-msgid "Notice on product page"
-msgstr "Notis på produktsidan"
-
-#: ../templates/admin/plugin-settings.php:53
-msgid ""
-"Let visitors know on the product page if the product can't be delivered by "
-"urb-it."
-msgstr "Låt besökare veta på produktsidan om produkten inte kan levereras av urb-it."
-
-#: ../templates/admin/plugin-settings.php:57
-msgid "Notice after added product"
-msgstr "Notis efter tillagd produkt"
-
-#: ../templates/admin/plugin-settings.php:59
-msgid "Tell the visitor when urb-it's deliver limits get exceeded."
-msgstr "Berätta för besökaren om urb-it's gränser överskrids."
-
-#: ../templates/admin/plugin-settings.php:63
-msgid "Notice in checkout & cart"
-msgstr "Notis i kassa & varukorg"
-
-#: ../templates/admin/plugin-settings.php:65
-msgid "Explain in checkout and cart why an order can't be delivered by urb-it."
-msgstr ""
-"Förklara i kassan och varukorgen varför en order inte kan levererad av urb-"
-"it."
-
-#: ../templates/admin/plugin-settings.php:69
-msgid "Postcode validator on product page"
-msgstr "Postnummer-validator på produktsida"
-
-#: ../templates/admin/plugin-settings.php:71
-msgid "Add a postcode validator on the product page."
-msgstr "Lägg till en postnummer-validator på produktsidan."
-
-#: ../templates/admin/plugin-settings.php:79
-msgid "Opening hours"
-msgstr "Öppettider"
-
-#: ../templates/admin/plugin-settings.php:80
-msgid "The opening hours are from now on set in the Retailer portal."
-msgstr "Öppettiderna anges numera från Retailer-portalen."
-
-#: ../templates/admin/plugin-settings.php:86
-msgid "View log"
-msgstr "Visa logg"
-
-#: ../templates/admin/plugin-settings.php:86
-msgid "only intended for urb-it developers"
-msgstr "endast avsedd för urb-it-utvecklare"
+msgstr "urb-it specifik tid"
 
 #: ../templates/postcode-validator/form.php:2
 msgid "You can purchase with urb-it!"
@@ -335,27 +154,27 @@ msgstr "Postnummer"
 msgid "Check"
 msgstr "Kolla"
 
-#: ../templates/checkout/field-delivery-time.php:3
+#: ../templates/checkout/field-delivery-time.php:7
 msgid "Delivery time"
 msgstr "Leveranstid"
 
-#: ../templates/checkout/field-delivery-time.php:9
+#: ../templates/checkout/field-delivery-time.php:13
 msgid "Day"
 msgstr "Dag"
 
-#: ../templates/checkout/field-delivery-time.php:23
+#: ../templates/checkout/field-delivery-time.php:26
 msgid "today"
 msgstr "idag"
 
-#: ../templates/checkout/field-delivery-time.php:31
+#: ../templates/checkout/field-delivery-time.php:34
 msgid "Time"
 msgstr "Tid"
 
-#: ../templates/checkout/field-delivery-time.php:32
+#: ../templates/checkout/field-delivery-time.php:35
 msgid "HH:MM"
 msgstr "TT:MM"
 
-#: ../templates/checkout/field-delivery-time.php:33
+#: ../templates/checkout/field-delivery-time.php:36
 msgid "Closed"
 msgstr "Stängt"
 
@@ -368,20 +187,66 @@ msgstr "Meddelande till urb-it"
 msgid "Ex. entry code"
 msgstr "Ex. portkod"
 
+#: ../includes/class-admin-settings.php:39
+msgid "General Settings"
+msgstr "Allmänna inställningar"
+
+#: ../includes/class-admin-settings.php:44
+msgid ""
+"Let visitors know on the product page if the product can't be delivered by "
+"urb-it."
+msgstr "Låt besökare veta på produktsidan om produkten inte kan levereras av urb-it."
+
+#: ../includes/class-admin-settings.php:51
+msgid "Tell the visitor when urb-it's deliver limits get exceeded."
+msgstr "Berätta för besökaren om urb-it's gränser överskrids."
+
+#: ../includes/class-admin-settings.php:58
+msgid "Explain in checkout and cart why an order can't be delivered by urb-it."
+msgstr ""
+"Förklara i kassan och varukorgen varför en order inte kan levererad av urb-"
+"it."
+
 #. Base ID
-#: ../includes/class-widget.php:14
+#: ../includes/class-admin-settings.php:64 ../includes/class-widget.php:15
 msgid "Postcode Validator"
 msgstr "Postnummer-validator"
 
-#: ../includes/class-widget.php:15
+#: ../includes/class-admin-settings.php:65
+msgid "Add a postcode validator on the product page."
+msgstr "Lägg till en postnummer-validator på produktsidan."
+
+#: ../includes/class-widget.php:16
 msgid "Let your customers see if they can have deliveries from urb-it."
 msgstr "Låt dina kunder se om de kan få leveranser från urb-it."
 
-#: ../includes/class-widget.php:50
+#: ../includes/class-widget.php:51
 msgid "Title:"
 msgstr "Titel:"
 
-#: ../includes/class-admin.php:33
+#: ../includes/class-validate.php:125 ../includes/class-frontend.php:54
+msgid "Your cart contains a bulky product and can't be delivered by urb-it."
+msgstr ""
+"Din varukorg innehåller en skrymmande produkt och kan därför inte levereras "
+"av urb-it."
+
+#: ../includes/class-validate.php:132
+msgid ""
+"Your cart contains a product that's out of stock and can't be delivered by "
+"urb-it."
+msgstr ""
+"Din varukorg innehåller en produkt som är slut i lager, och kan därför inte "
+"levereras av urb-it."
+
+#: ../includes/class-validate.php:164
+msgid "Urb-it can unfortunately not deliver to this address."
+msgstr "Urb-it kan tyvärr inte leverera till denna adress."
+
+#: ../includes/class-validate.php:168
+msgid "We can unfortunately not deliver at this time, please choose another."
+msgstr "Vi kan tyvärr inte leverera denna tid, vänligen välj en annan."
+
+#: ../includes/class-admin.php:38
 msgid ""
 "Urb-it requires cURL to work. Please contact your hosting provider or urb-it "
 "for help."
@@ -389,7 +254,7 @@ msgstr ""
 "Urb-it kräver cURL för att fungera. Vänligen kontakta ditt webbhotell eller "
 "urb-it om du behöver hjälp."
 
-#: ../includes/class-admin.php:44
+#: ../includes/class-admin.php:49
 #, php-format
 msgid ""
 "You have to <a href=\"%s\">set up some settings</a> before your customers can "
@@ -398,47 +263,15 @@ msgstr ""
 "Du behöver <a href=\"%s\">göra ett par inställningar</a> innan dina kunder kan "
 "använda urb-it som leveransmetod."
 
-#: ../includes/class-admin.php:59
-msgid "Monday"
-msgstr "Måndag"
-
-#: ../includes/class-admin.php:60
-msgid "Tuesday"
-msgstr "Tisdag\n"
-
-#: ../includes/class-admin.php:61
-msgid "Wednesday"
-msgstr "Onsdag"
-
-#: ../includes/class-admin.php:62
-msgid "Thursday"
-msgstr "Torsdag"
-
-#: ../includes/class-admin.php:63
-msgid "Friday"
-msgstr "Fredag"
-
-#: ../includes/class-admin.php:64
-msgid "Saturday"
-msgstr "Lördag"
-
-#: ../includes/class-admin.php:65
-msgid "Sunday"
-msgstr "Söndag"
-
-#: ../includes/class-admin.php:94
-msgid "Changes saved successfully."
-msgstr "Ändringar sparade."
-
-#: ../includes/class-admin.php:101
+#: ../includes/class-admin.php:68
 msgid "Bulky Product"
 msgstr "Skrymmande produkt"
 
-#: ../includes/class-admin.php:102
+#: ../includes/class-admin.php:69
 msgid "Please check this if the product is too bulky for urb-it"
 msgstr "Kryssa i denna om produkten är för skrymmande för urb-it"
 
-#: ../includes/class-admin.php:116
+#: ../includes/class-admin.php:83
 #, php-format
 msgid ""
 "Note: If the product exceeds %d kilos and/or %d liters, it can't be "
@@ -447,59 +280,187 @@ msgstr ""
 "OBS: Om produkten överskrider %d kg och/eller %d liter kan den inte "
 "levereras av urb-it."
 
-#: ../includes/class-shipping-one-hour.php:39 ../includes/class-shipping-specific-
-#: time.php:39
+#: ../includes/class-frontend-checkout.php:26 ../includes/class-frontend-checkout.
+#: php:131
+#, php-format
+msgid ""
+"As the total weight of your cart is over %d kilos, it can unfortunately not "
+"be delivered by urb-it."
+msgstr ""
+"Eftersom den totala vikten av din varukorg är över %d kg kan den tyvärr inte "
+"bli levererad av urb-it."
+
+#: ../includes/class-frontend-checkout.php:29 ../includes/class-frontend-checkout.
+#: php:136
+#, php-format
+msgid ""
+"As the total volume of your cart is over %d liters, it can unfortunately not "
+"be delivered by urb-it."
+msgstr ""
+"Eftersom den totala volymen av din varukorg är över %d liter kan den tyvärr "
+"inte bli levererad av urb-it."
+
+#: ../includes/class-frontend-checkout.php:32
+msgid ""
+"As your cart contains a bulky product, it can unfortunately not be delivered "
+"by urb-it."
+msgstr ""
+"Eftersom din varukorg innehåller en skrymmande produkt kan den tyvärr inte "
+"bli levererad av urb-it."
+
+#: ../includes/class-frontend-checkout.php:44
+msgid ""
+"As the delivery location is outside urb-it's availability zone, urb-it is "
+"disabled for this order."
+msgstr ""
+"Eftersom leveransadressen ligger utanför urb-it's område är urb-it "
+"inaktiverat för denna order."
+
+#: ../includes/class-frontend-checkout.php:83
+msgid "Please enter a valid cellphone number."
+msgstr "Vänligen ange ett giltigt mobilnummer."
+
+#: ../includes/class-frontend-checkout.php:100
+#, php-format
+msgid "Please enter a delivery date in the format YYYY-MM-DD, ex: %s."
+msgstr "Vänligen ange ett leveransdatum i formatet ÅÅÅÅ-MM-DD, ex: %s."
+
+#: ../includes/class-frontend-checkout.php:105
+#, php-format
+msgid "Please enter a delivery time in the format HH:MM, ex: %s."
+msgstr "Vänligen ange en leveranstid i formatet TT:MM, ex: %s."
+
+#: ../includes/class-frontend-checkout.php:114
+#, php-format
+msgid "Please pick a time from %s and forward."
+msgstr "Vänligen välj en tid från %s och framåt."
+
+#: ../includes/class-frontend-checkout.php:118
+#, php-format
+msgid ""
+"We can unfortunately not deliver this far in the future, please choose a "
+"date not later than %s."
+msgstr ""
+"Vi kan tyvärr inte leverera så här långt fram i tiden, vänligen välj ett "
+"datum som inte är senare än %s."
+
+#: ../includes/class-frontend.php:37
+msgid "This product can't be delivered by urb-it."
+msgstr "Den här produkten kan inte levereras av urb-it."
+
+#: ../includes/class-frontend.php:48
+#, php-format
+msgid "Your cart's total weight exceeds %d kilos and can't be delivered by urb-it."
+msgstr ""
+"Din varukorgs totala vikt överskrider %d kg och kan därför inte bli "
+"levererad av urb-it."
+
+#: ../includes/class-frontend.php:51
+#, php-format
+msgid "Your cart's total volume exceeds %d liters and can't be delivered by urb-it."
+msgstr ""
+"Din varukorg totala volym överskrider %d liter och kan därför inte bli "
+"levererad av urb-it."
+
+#: ../includes/class-frontend.php:77
+msgid "Save"
+msgstr "Spara"
+
+#: ../includes/class-shipping-one-hour.php:14
+msgid "Now"
+msgstr "Nu"
+
+#: ../includes/class-shipping-one-hour.php:15
+msgid "Allows deliveries now."
+msgstr "Möjliggör överlämning nu."
+
+#: ../includes/class-shipping-one-hour.php:41 ../includes/class-shipping-specific-
+#: time.php:41
 msgid "Enable/Disable"
 msgstr "Aktivera/Inaktivera"
 
-#: ../includes/class-shipping-one-hour.php:45 ../includes/class-shipping-specific-
-#: time.php:45
-msgid "Method Title"
-msgstr "Titel"
+#: ../includes/class-shipping-one-hour.php:43
+msgid "Enable Now"
+msgstr "Aktivera Nu."
 
 #: ../includes/class-shipping-one-hour.php:47 ../includes/class-shipping-specific-
 #: time.php:47
+msgid "Method Title"
+msgstr "Titel"
+
+#: ../includes/class-shipping-one-hour.php:49 ../includes/class-shipping-specific-
+#: time.php:49
 msgid "This controls the title which the user sees during checkout."
 msgstr "Detta kontrollerar titeln användaren ser i kassan."
 
-#: ../includes/class-shipping-one-hour.php:52 ../includes/class-shipping-specific-
-#: time.php:52
+#: ../includes/class-shipping-one-hour.php:54 ../includes/class-shipping-specific-
+#: time.php:54
 msgid "Fee Type"
 msgstr "Avgiftstyp"
 
-#: ../includes/class-shipping-one-hour.php:54 ../includes/class-shipping-specific-
-#: time.php:54
+#: ../includes/class-shipping-one-hour.php:56 ../includes/class-shipping-specific-
+#: time.php:56
 msgid "How to calculate delivery charges"
 msgstr "Hur leveranskostnaden ska räknas ut"
 
-#: ../includes/class-shipping-one-hour.php:57 ../includes/class-shipping-specific-
-#: time.php:57
+#: ../includes/class-shipping-one-hour.php:59 ../includes/class-shipping-specific-
+#: time.php:59
 msgid "Fixed amount"
 msgstr "Bestämd summa"
 
-#: ../includes/class-shipping-one-hour.php:58 ../includes/class-shipping-specific-
-#: time.php:58
+#: ../includes/class-shipping-one-hour.php:60 ../includes/class-shipping-specific-
+#: time.php:60
 msgid "Percentage of cart total"
 msgstr "Procentsats av varukorgens totala summa"
 
-#: ../includes/class-shipping-one-hour.php:59 ../includes/class-shipping-specific-
-#: time.php:59
+#: ../includes/class-shipping-one-hour.php:61 ../includes/class-shipping-specific-
+#: time.php:61
 msgid "Fixed amount per product"
 msgstr "Bestämd summa per produkt"
 
-#: ../includes/class-shipping-one-hour.php:64 ../includes/class-shipping-specific-
-#: time.php:64
+#: ../includes/class-shipping-one-hour.php:66 ../includes/class-shipping-specific-
+#: time.php:66
 msgid "Price"
 msgstr "Pris"
 
-#: ../includes/class-shipping-one-hour.php:66 ../includes/class-shipping-specific-
-#: time.php:66
+#: ../includes/class-shipping-one-hour.php:68 ../includes/class-shipping-specific-
+#: time.php:68
 msgid ""
 "What fee do you want to charge for local delivery, disregarded if you choose "
 "free. Leave blank to disable."
 msgstr ""
 "Den avgift du vill ta för leveransen. Lämna tomt för att göra leveransen "
 "gratis."
+
+#: ../includes/class-order.php:18 ../includes/class-order.php:36
+msgid "Picked up"
+msgstr "Upplockad"
+
+#: ../includes/class-order.php:23
+#, php-format
+msgid "Picked up <span class=\"count\">(%s)</span>"
+msgid_plural "Picked up <span class=\"count\">(%s)</span>"
+msgstr[0] "Upplockad <span class=\"count\">(%s)</span>"
+msgstr[1] "Upplockad <span class=\"count\">(%s)</span>"
+
+#: ../includes/class-order.php:54
+#, php-format
+msgid "Urb-it delivery time: %s"
+msgstr "Urb-it leveranstid: %s"
+
+#: ../includes/class-order.php:61
+#, php-format
+msgid "Urb-it message: %s"
+msgstr "Urb-it meddelande: %s"
+
+#: ../includes/class-order.php:172
+#, php-format
+msgid ""
+"Thank you for choosing urb-it as shipping method. Your order is confirmed "
+"and will be delivered at %s."
+msgstr ""
+"Tack för att du väljer urb-it för din leverans. Din order är bekräftad och "
+"kommer bli levererad %s."
 
 #: ../includes/class-coupon.php:29
 msgid "Only valid for urb-it"
@@ -538,6 +499,6 @@ msgstr ""
 msgid "urb-it specific time allows deliveries at a specific time."
 msgstr "urb-it specific time möjliggör leveranser vid en specifik tidpunkt."
 
-#: ../includes/class-shipping-specific-time.php:41
+#: ../includes/class-shipping-specific-time.php:43
 msgid "Enable urb-it specific time"
 msgstr "Aktivera urb-it specific time"
