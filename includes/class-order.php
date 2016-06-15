@@ -116,7 +116,7 @@
 						'last_name' => $order->shipping_last_name,
 						'email' => $order->billing_email,
 						'cell_phone' => $this->sanitize_phone($order->billing_phone),
-						'consumer_comment' => $order->urb_it_message
+						'consumer_comment' => $order->urb_it_message ? $order->urb_it_message : $order->customer_message
 					), $order),
 					'store_location' => array('id' => $this->setting('pickup_location_id')),
 					'articles' => array()

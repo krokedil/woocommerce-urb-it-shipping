@@ -16,6 +16,11 @@
 		// Postcode validator: Ajax
 		public function ajax() {
 			echo (isset($_GET['postcode']) && $this->validate->postcode($_GET['postcode'])) ? '1' : '0';
+			
+			if(isset($_GET['save']) && $_GET['save']) {
+				WC()->customer->set_shipping_postcode($_GET['postcode']);
+			}
+			
 			exit;
 		}
 		

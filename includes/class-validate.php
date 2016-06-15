@@ -183,7 +183,7 @@
 				
 				if(!$valid) $this->log('Invalid postcode: ' . $postcode);
 				
-				return $valid;
+				return apply_filters('woocommerce_urb_it_valid_postcode', $valid, $postcode);
 			}
 			catch(Exception $e) {
 				$this->log('Error while validating postcode: ' . $e->getMessage());

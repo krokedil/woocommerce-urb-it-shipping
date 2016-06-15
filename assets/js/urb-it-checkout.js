@@ -15,9 +15,16 @@ jQuery(function($) {
 		remember_message = $(this).val();
 	});
 	
+	$(document.body).on('urbit_set_time_field', function() {
+		console.log('Setting time field on command...');
+		set_time_field();
+	});
+	
 	function set_time_field() {
 		var date = $('#urb_it_date'),
 				time = $('#urb_it_time');
+		
+		console.log('Setting time field', date);
 		
 		if(!date.length || !time.length) return;
 		

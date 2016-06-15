@@ -57,6 +57,8 @@
 					'opening_hours' => include(dirname(__FILE__) . '/includes/class-opening-hours.php'),
 					'coupon' => include(dirname(__FILE__) . '/includes/class-coupon.php')
 				);
+				
+				self::$_modules['klarna_checkout'] = include(dirname(__FILE__) . '/includes/class-klarna-checkout.php');
 			}
 			
 			return self::$_instance;
@@ -211,6 +213,20 @@
 		}
 		
 		
+		public function add_asset($handle, $src, $depend = array()) {
+			if(substr($src, -3) === '.js') {
+				wp_enqueue_script($handle, $this->url . 'assets/js/' . $src, $depend, self::VERSION, true);
+			}
+			else {
+				echo '<style>';
+				
+				include($this->path . 'assets/css/' . $src);
+				
+				echo '</style>';
+			}
+		}
+		
+		
 		// Sanitize phone number to the format "0701234567"
 		public function sanitize_phone($phone) {
 			$phone = preg_replace(array('/\D/', '/^(00)?460?/'), array('', '0'), $phone);
@@ -218,6 +234,11 @@
 			if(strncmp($phone, '07', 2) !== 0 || strlen($phone) !== 10) return false;
 			
 			return $phone;
+		}
+		
+		
+		public function is_ajax() {
+			return (defined('DOING_AJAX') && DOING_AJAX);
 		}
 		
 		
