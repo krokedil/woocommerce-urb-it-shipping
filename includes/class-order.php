@@ -128,17 +128,28 @@
 				
 				$order_total = 0;
 				
-				foreach($order->get_items() as $item_id => $item) {
-					$_product = $order->get_product_from_item($item);
-					
-					$sku = $_product->get_sku();
-					$order_total += $order->get_line_total($item);
-					
-					$order_data['articles'][] = array(
-						'identifier' => ($sku ? $sku : ('#' . ($_product->is_type('variation') ? $_product->variation_id : $_product->id))),
-						'quantity' => $item['qty'],
-						'description' => $this->get_item_description($item_id, $_product, $order)
-					);
+				foreach($order->get_items(array('line_item', 'coupon')) as $item_id => $item) {
+					if($item['type'] === 'coupon') {
+						$line_total = (float)$item['discount_amount'] + (float)$item['discount_amount_tax'];
+						
+						$order_data['articles'][] = array(
+							'identifier' => 'VOUCHER',
+							'quantity' => 1,
+							'description' => sprintf(__('Used %s of voucher: %s', self::LANG), $this->format_price($line_total), $item['name'])
+						);
+					}
+					else {
+						$_product = $order->get_product_from_item($item);
+						
+						$sku = $_product->get_sku();
+						$order_total += $order->get_line_total($item);
+						
+						$order_data['articles'][] = array(
+							'identifier' => ($sku ? $sku : ('#' . ($_product->is_type('variation') ? $_product->variation_id : $_product->id))),
+							'quantity' => $item['qty'],
+							'description' => $this->get_item_description($item_id, $_product, $order)
+						);
+					}
 				}
 				
 				$order_data['total_amount_excl_vat'] = $order_total;

@@ -211,6 +211,22 @@
 		}
 		
 		
+		public function format_price($price) {
+			$decimal_separator  = wc_get_price_decimal_separator();
+			$thousand_separator = wc_get_price_thousand_separator();
+			$decimals           = wc_get_price_decimals();
+			$price_format       = get_woocommerce_price_format();
+			
+			$price = apply_filters( 'formatted_woocommerce_price', number_format( $price, $decimals, $decimal_separator, $thousand_separator ), $price, $decimals, $decimal_separator, $thousand_separator );
+			
+			if(apply_filters('woocommerce_price_trim_zeros', false) && $decimals > 0) {
+				$price = wc_trim_zeros($price);
+			}
+			
+			return html_entity_decode(sprintf($price_format, get_woocommerce_currency_symbol(), $price));
+		}
+		
+		
 		// Sanitize phone number to the format "0701234567"
 		public function sanitize_phone($phone) {
 			$phone = preg_replace(array('/\D/', '/^(00)?460?/'), array('', '0'), $phone);
