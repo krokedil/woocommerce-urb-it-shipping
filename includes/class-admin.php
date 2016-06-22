@@ -19,7 +19,15 @@
 			
 			add_action('admin_head', array($this, 'order_status_icon'));
 			
-			require_once($this->path . 'includes/class-admin-settings.php');
+			add_filter('woocommerce_get_settings_pages', array($this, 'settings_pages'));
+		}
+		
+		
+		public function settings_pages($settings) {
+			$settings[] = include($this->path . 'includes/class-admin-settings.php');
+			$settings[] = include($this->path . 'includes/class-admin-ims.php');
+			
+			return $settings;
 		}
 		
 		

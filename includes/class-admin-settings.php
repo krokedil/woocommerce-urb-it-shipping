@@ -2,119 +2,127 @@
 	// Exit if accessed directly
 	if(!defined('ABSPATH')) exit;
 	
-	class WooCommerce_Urb_It_Admin_Settings extends WooCommerce_Urb_It_Admin {
+	class WooCommerce_Urb_It_Admin_Settings extends WC_Settings_Page {
+		const LANG = WooCommerce_Urb_It::LANG;
+		const SETTINGS_PREFIX = WooCommerce_Urb_It::SETTINGS_PREFIX;
+		
+		private $plugin;
+		
+		
 		public function __construct() {
-			add_filter('woocommerce_settings_tabs_array', array($this, 'add_tab'), 50);
-			add_action('woocommerce_settings_tabs_urb_it', array($this, 'tab_settings'));
-			add_action('woocommerce_update_options_urb_it', array($this, 'save_settings'));
-		}
-		
-		
-		public function add_tab($tabs) {
-			$tabs['urb_it'] = __('urb-it', self::LANG);
+			$this->id = 'urb_it';
+			$this->label = __('urb-it', self::LANG);
+			$this->plugin = WooCommerce_Urb_It::instance();
 			
-			return $tabs;
+			add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 20 );
+			add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
+			add_action( 'woocommerce_sections_' . $this->id, array( $this, 'output_sections' ) );
+			add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save' ) );
 		}
 		
 		
-		public function tab_settings() {
-			woocommerce_admin_fields($this->get_general_settings());
-			woocommerce_admin_fields($this->get_technical_settings());
-			woocommerce_admin_fields($this->get_api_settings('prod'));
-			woocommerce_admin_fields($this->get_api_settings('stage'));
-		}
-		
-		
-		public function save_settings() {
-			woocommerce_update_options($this->get_general_settings());
-			woocommerce_update_options($this->get_technical_settings());
-			woocommerce_update_options($this->get_api_settings('prod'));
-			woocommerce_update_options($this->get_api_settings('stage'));
-		}
-		
-		
-		protected function get_general_settings() {
-			$settings = array(
-				'main_title' => array(
-					'name'     => __('General Settings', self::LANG),
-					'type'     => 'title'
-				),
-				'notice_product_page' => array(
-					'name' => __('Notice: Undeliverable Product', self::LANG),
-					'desc' => __('Let visitors know on the product page if the product can\'t be delivered by urb-it.', self::LANG),
-					'type' => 'checkbox',
-					'default' => 'yes',
-					'id'   => self::SETTINGS_PREFIX . 'notice_product_page'
-				),
-				'notice_added_product' => array(
-					'name' => __('Notice: Exceeded Cart Limit', self::LANG),
-					'desc' => __('Tell the visitor when urb-it\'s deliver limits get exceeded.', self::LANG),
-					'type' => 'checkbox',
-					'default' => 'yes',
-					'id'   => self::SETTINGS_PREFIX . 'notice_added_product'
-				),
-				'notice_checkout' => array(
-					'name' => __('Notice: Undeliverable Order', self::LANG),
-					'desc' => __('Explain in checkout and cart why an order can\'t be delivered by urb-it.', self::LANG),
-					'type' => 'checkbox',
-					'default' => 'yes',
-					'id'   => self::SETTINGS_PREFIX . 'notice_checkout'
-				),
-				'postcode_validator_product_page' => array(
-					'name' => __('Postcode Validator', self::LANG),
-					'desc' => __('Add a postcode validator on the product page.', self::LANG),
-					'type' => 'checkbox',
-					'default' => 'yes',
-					'id'   => self::SETTINGS_PREFIX . 'postcode_validator_product_page'
-				),
-				'section_end' => array(
-					'type' => 'sectionend'
-				)
+		public function get_sections() {
+			$sections = array(
+				''         => __('General Settings', self::LANG),
+				'integration'     => __('Integration', self::LANG)
 			);
-			
-			return apply_filters('woocommerce_urb_it_general_settings', $settings);
+	
+			return apply_filters('woocommerce_get_sections_' . $this->id, $sections);
 		}
 		
-
-		protected function get_technical_settings() {
-			$settings = array(
-				'main_title' => array(
-					'name'     => __('Technical Settings', self::LANG),
-					'type'     => 'title'
-				),
-				'environment' => array(
-					'name' => __('Environment', self::LANG),
-					'type' => 'radio',
-					'options' => array(
-						'prod' => __('Production', self::LANG),
-						'stage' => __('Stage', self::LANG)
-					),
-					'default' => 'stage',
-					'id'   => self::SETTINGS_PREFIX . 'environment'
-				),
-				'log' => array(
-					'name' => __('Log', self::LANG),
-					'type' => 'radio',
-					'options' => array(
-						'errors' => __('Only errors', self::LANG),
-						'everything' => __('Everything', self::LANG)
-					),
-					'default' => 'errors',
-					'id'   => self::SETTINGS_PREFIX . 'log'
-				),
-				'section_end' => array(
-					'type' => 'sectionend'
-				)
-			);
+		
+		public function save() {
+			global $current_section;
+	
+			$settings = $this->get_settings($current_section);
+			WC_Admin_Settings::save_fields($settings);
+		}
+		
+		
+		public function get_settings($current_section = '') {
 			
-			return apply_filters('woocommerce_urb_it_technical_settings', $settings);
+			// Integration
+			if($current_section === 'integration') {
+				$settings = array(
+					'main_title' => array(
+						'name'     => __('Integration', self::LANG),
+						'type'     => 'title'
+					),
+					'environment' => array(
+						'name' => __('Environment', self::LANG),
+						'type' => 'radio',
+						'options' => array(
+							'prod' => __('Production', self::LANG),
+							'stage' => __('Stage', self::LANG)
+						),
+						'default' => 'stage',
+						'id'   => self::SETTINGS_PREFIX . 'environment'
+					),
+					'log' => array(
+						'name' => __('Log', self::LANG),
+						'type' => 'radio',
+						'options' => array(
+							'errors' => __('Only errors', self::LANG),
+							'everything' => __('Everything', self::LANG)
+						),
+						'default' => 'errors',
+						'id'   => self::SETTINGS_PREFIX . 'log'
+					),
+					'section_end' => array(
+						'type' => 'sectionend'
+					)
+				) + $this->get_api_settings('prod') + $this->get_api_settings('stage');
+			}
+			
+			// General
+			else {
+				$settings = array(
+					'main_title' => array(
+						'name'     => __('General Settings', self::LANG),
+						'type'     => 'title'
+					),
+					'notice_product_page' => array(
+						'name' => __('Notice: Undeliverable Product', self::LANG),
+						'desc' => __('Let visitors know on the product page if the product can\'t be delivered by urb-it.', self::LANG),
+						'type' => 'checkbox',
+						'default' => 'yes',
+						'id'   => self::SETTINGS_PREFIX . 'notice_product_page'
+					),
+					'notice_added_product' => array(
+						'name' => __('Notice: Exceeded Cart Limit', self::LANG),
+						'desc' => __('Tell the visitor when urb-it\'s deliver limits get exceeded.', self::LANG),
+						'type' => 'checkbox',
+						'default' => 'yes',
+						'id'   => self::SETTINGS_PREFIX . 'notice_added_product'
+					),
+					'notice_checkout' => array(
+						'name' => __('Notice: Undeliverable Order', self::LANG),
+						'desc' => __('Explain in checkout and cart why an order can\'t be delivered by urb-it.', self::LANG),
+						'type' => 'checkbox',
+						'default' => 'yes',
+						'id'   => self::SETTINGS_PREFIX . 'notice_checkout'
+					),
+					'postcode_validator_product_page' => array(
+						'name' => __('Postcode Validator', self::LANG),
+						'desc' => __('Add a postcode validator on the product page.', self::LANG),
+						'type' => 'checkbox',
+						'default' => 'yes',
+						'id'   => self::SETTINGS_PREFIX . 'postcode_validator_product_page'
+					),
+					'section_end' => array(
+						'type' => 'sectionend'
+					)
+				);
+			}
+			
+			return apply_filters('woocommerce_get_settings_' . $this->id, $settings, $current_section);
 		}
 		
 		
 		protected function get_api_settings($environment = 'stage') {
 			$settings = array(
 				$environment . '_title' => array(
-					'name'     => sprintf(__('%s Credentials', self::LANG), ($environment === 'prod' ? 'Production' : ucfirst($environment))) . (($this->setting('environment') === $environment) ? (' (' . __('active', self::LANG) . ')') : ''),
+					'name'     => sprintf(__('%s Credentials', self::LANG), ($environment === 'prod' ? 'Production' : ucfirst($environment))) . (($this->plugin->setting('environment') === $environment) ? (' (' . __('active', self::LANG) . ')') : ''),
 					'type'     => 'title'
 				),
 				$environment . '_store_key' => array(
@@ -142,6 +150,14 @@
 			);
 			
 			return apply_filters('woocommerce_urb_it_api_settings', $settings, $environment);
+		}
+		
+		
+		public function output() {
+			global $current_section;
+	
+			$settings = $this->get_settings($current_section);
+			WC_Admin_Settings::output_fields($settings);
 		}
 	}
 	

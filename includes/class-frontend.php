@@ -23,6 +23,9 @@
 			// Notices
 			add_action('woocommerce_add_to_cart', array($this, 'notice_added_product'), 10, 6);
 			add_action('woocommerce_single_product_summary', array($this, 'notice_product_page'), 35);
+			
+			// IMS
+			add_action('init', array($this, 'include_ims'));
 		}
 		
 		
@@ -76,6 +79,13 @@
 			
 			?><p><input class="button" type="submit" name="calc_shipping" value="<?php _e('Save', self::LANG); ?>" /></p><?php
 			?></form><?php
+		}
+		
+		
+		public function include_ims() {
+			if($this->setting('ims_active') === 'yes') {
+				require_once($this->path . '/includes/class-ims.php');
+			}
 		}
 	}
 	
