@@ -85,7 +85,7 @@
 					),
 					'ims_trash' => array(
 						'name' => __('Trash', self::LANG),
-						'desc' => __('Put deleted products in trash', self::LANG),
+						'desc' => __('Put deleted products in trash (instead of deleting them permanently)', self::LANG),
 						'type' => 'checkbox',
 						'default' => '',
 						'id'   => self::SETTINGS_PREFIX . 'ims_trash'
