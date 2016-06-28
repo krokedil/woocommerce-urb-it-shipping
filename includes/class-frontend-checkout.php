@@ -108,7 +108,7 @@
 				if(!$valid_time) return;
 				
 				$delivery_time = $this->date($date . ' ' . $time);
-				$min_time = $this->date($this->specific_time_offset());
+				$min_time = $this->date($this->specific_time_offset(false));
 				
 				if($delivery_time < $min_time) {
 					throw new Exception(sprintf(__('Please pick a time from %s and forward.', self::LANG), $min_time->format('H:i')));

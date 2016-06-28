@@ -127,8 +127,8 @@
 		}
 		
 		
-		public function specific_time_offset() {
-			return apply_filters('woocommerce_urb_it_specific_time_offset', '+1 hour 15 min');
+		public function specific_time_offset($with_margin = true) {
+			return apply_filters('woocommerce_urb_it_specific_time_offset', ($with_margin ? '+1 hour 15 min' : '+1 hour 5 min'), $with_margin);
 		}
 		
 		
