@@ -195,37 +195,41 @@
 		
 		// Get order item description
 		public function get_item_description($item_id, $product, $order) {
-			$attributes = array();
 			$metadata = $order->has_meta($item_id);
+			$title = $product->get_title();
 			
-			if(!$metadata) return $product->get_title();
-			
-			foreach($metadata as $meta) {
-				// Skip hidden core fields
-				if(in_array($meta['meta_key'], apply_filters('woocommerce_hidden_order_itemmeta', array(
-					'_qty',
-					'_tax_class',
-					'_product_id',
-					'_variation_id',
-					'_line_subtotal',
-					'_line_subtotal_tax',
-					'_line_total',
-					'_line_tax',
-				)))) continue;
-
-				// Skip serialised meta
-				if(is_serialized($meta['meta_value'])) continue;
-
-				// Get attribute data
-				if(taxonomy_exists(wc_sanitize_taxonomy_name($meta['meta_key']))) {
-					$term = get_term_by('slug', $meta['meta_value'], wc_sanitize_taxonomy_name($meta['meta_key']));
-					if(isset($term->name)) $meta['meta_value'] = $term->name;
+			if($metadata) {
+				$attributes = array();
+				
+				foreach($metadata as $meta) {
+					// Skip hidden core fields
+					if(in_array($meta['meta_key'], apply_filters('woocommerce_hidden_order_itemmeta', array(
+						'_qty',
+						'_tax_class',
+						'_product_id',
+						'_variation_id',
+						'_line_subtotal',
+						'_line_subtotal_tax',
+						'_line_total',
+						'_line_tax',
+					)))) continue;
+	
+					// Skip serialised meta
+					if(is_serialized($meta['meta_value'])) continue;
+	
+					// Get attribute data
+					if(taxonomy_exists(wc_sanitize_taxonomy_name($meta['meta_key']))) {
+						$term = get_term_by('slug', $meta['meta_value'], wc_sanitize_taxonomy_name($meta['meta_key']));
+						if(isset($term->name)) $meta['meta_value'] = $term->name;
+					}
+					
+					$attributes[] = rawurldecode($meta['meta_value']);
 				}
 				
-				$attributes[] = rawurldecode($meta['meta_value']);
+				if($attributes) $title .= ' - ' . implode(', ', $attributes);
 			}
 			
-			return apply_filters('woocommerce_urb_it_item_description', $product->get_title() . (!empty($attributes) ? (' - ' . implode(', ', $attributes)) : ''), $item_id, $product, $order);
+			return apply_filters('woocommerce_urb_it_item_description', $title, $item_id, $product, $order);
 		}
 	}
 	
