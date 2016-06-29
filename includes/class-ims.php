@@ -88,8 +88,6 @@
 					$this->plugin->error('Error while fetching stock levels:', $e->getMessage(), $e->getParams());
 				}
 				
-				$this->set_cursor($now);
-				
 				if(!$changes) {
 					$this->plugin->log('No changes during stock level sync.');
 					return;
@@ -133,6 +131,7 @@
 				}
 				
 				$this->clear_stock_cache();
+				$this->set_cursor($now);
 				
 				echo 'Stock level sync done.';
 			}
@@ -155,8 +154,6 @@
 				catch(UrbException $e) {
 					$this->plugin->error('Error while fetching products:', $e->getMessage(), $e->getParams());
 				}
-				
-				$this->set_cursor($now);
 				
 				if(!$products) {
 					$this->plugin->log('No changes during product sync.');
@@ -210,6 +207,7 @@
 				}
 				
 				$this->clear_stock_cache();
+				$this->set_cursor($now);
 				
 				echo 'Product sync done.';
 			}
