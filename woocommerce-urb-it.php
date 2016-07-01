@@ -44,6 +44,14 @@
 		
 		protected static $_modules = array();
 		protected $update_checker;
+		protected $country_codes = array(
+			'46', // Sweden
+			'33'  // France
+		);
+		protected $mobile_prefixes = array(
+			'07', // Generic
+			'06'  // France
+		);
 		
 		
 		// Singelton
@@ -229,9 +237,9 @@
 		
 		// Sanitize phone number to the format "0701234567"
 		public function sanitize_phone($phone) {
-			$phone = preg_replace(array('/\D/', '/^(00)?460?/'), array('', '0'), $phone);
+			$phone = preg_replace(array('/\D/', '/^(00)?(' . implode('|', $this->country_codes) . ')0?/'), array('', '0'), $phone);
 			
-			if(strncmp($phone, '07', 2) !== 0 || strlen($phone) !== 10) return false;
+			if(!in_array(substr($phone, 0, 2), $this->mobile_prefixes) || strlen($phone) !== 10) return false;
 			
 			return $phone;
 		}
