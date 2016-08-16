@@ -1,0 +1,20 @@
+.klarna-checkout-urb-it label {
+	display: block;
+}
+
+.klarna-checkout-urb-it p {
+	overflow: hidden;
+}
+
+.klarna-checkout-urb-it .input-text,
+.klarna-checkout-urb-it .button {
+	display: block;
+	float: left;
+	width: 49%;
+	margin: 0;
+}
+
+.klarna-checkout-urb-it .urb-it-postcode .input-text,
+.klarna-checkout-urb-it .urb-it-street {
+	margin-right: 2%;
+}

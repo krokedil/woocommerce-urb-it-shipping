@@ -63,7 +63,7 @@ jQuery(function($) {
 				time.show().closest('p').find('.error').hide();
 				time.closest('p').find('label').show();
 				
-				if(time_now < time_open || time.val() > time_close || time.val() < time_open) time.val(time_open);
+				if(time.val() > time_close || time.val() < time_open) time.val(time_open);
 			}
 		}
 	}

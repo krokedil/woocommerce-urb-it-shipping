@@ -3,17 +3,11 @@ jQuery(function($) {
 	
 	var kco = {
 		blocked: false,
-		suspended: false,
 		
 		block: function() {
-			this.suspend();
-			return;
-			
 			if(this.blocked) return;
 			
 			this.blocked = true;
-			
-			$('#urb-it-postcode').first();
 			
 			$('#klarna-checkout-container').block({
 				message: null,
@@ -25,9 +19,6 @@ jQuery(function($) {
 		},
 		
 		unblock: function() {
-			this.resume();
-			return;
-			
 			if(!this.blocked) return;
 			
 			this.blocked = false;
@@ -36,51 +27,18 @@ jQuery(function($) {
 		},
 		
 		suspend: function() {
-			if(this.suspended) return;
-			
-			this.suspended = true;
-			
-			console.log('Init suspention');
-			
-			
-			
-			this.keep_suspended();
-		},
-		
-		keep_suspended: function() {
-			var self = this;
-			
-			if(!this.suspended) return;
-			
 			if(typeof window._klarnaCheckout == 'function') {
 				window._klarnaCheckout(function (api) {
-					// Remove focus from KCO
-					if(!$(':focus').length) document.activeElement.blur();
-			
 					api.suspend();
 				});
 			}
-			
-			setTimeout(function() {
-				self.keep_suspended();
-			}, 1000);
 		},
 		
 		resume: function() {
-			if(!this.suspended) return;
-			
-			this.suspended = false;
-			
 			if(typeof window._klarnaCheckout == 'function') {
-				//var focused = $('input:focus, textarea:focus');
-				
-				//console.log('Focused:', focused);
-				
-				window._klarnaCheckout(function(api) {
+				window._klarnaCheckout(function (api) {
 					api.resume();
 				});
-				
-				//if(focused.length) focused.focus();
 			}
 		},
 		
@@ -93,7 +51,6 @@ jQuery(function($) {
 			// If not urb-it, reset restrictions and abort
 			if(shipping_method != 'urb_it_one_hour' && shipping_method != 'urb_it_specific_time') {
 				$('.urb-it').slideUp(200);
-				console.log('Unblocking, as shipping method is not urb-it', shipping_method);
 				self.unblock();
 				return;
 			}
@@ -101,25 +58,22 @@ jQuery(function($) {
 			// If urb-it, show fields
 			$('.urb-it').slideDown(200);
 			
-			$('#urb-it-postcode').first();
-			
 			// If empty/invalid address, block KCO
 			if($.trim($('#urb-it-postcode').val()) == ''
 			|| $.trim($('#urb-it-street').val()) == ''
 			|| $.trim($('#urb-it-city').val()) == ''
-			|| !$('#urb-it-postcode').data('valid')) {
-				console.log('urb-it', 'Invalid address - blocking KCO');
+			|| $('.urb-it .postcode-error:visible').length) {
+				console.log('urb-it', 'Blocking KCO');
 				self.block();
-				return;
 			}
 			
-			// Unblock KCO
-			console.log('urb-it', 'Unblocking KCO as no restrictions occur');
-			self.unblock();
+			// If address, unblock KCO
+			else {
+				console.log('urb-it', 'Unblocking KCO');
+				self.unblock();
+			}
 		}
 	};
-	
-	window.ivar = kco;
 	
 	kco.restrict();
 	
@@ -157,12 +111,11 @@ jQuery(function($) {
 		$.get('/', {'wc-ajax': 'urb_it_validate_postcode', postcode: postcode, save: true}, function(valid) {
 			valid = !!parseInt(valid);
 			
-			//kco.resume();
-			
-			$('#urb-it-postcode').data('valid', valid);
-			kco.restrict();
+			kco.resume();
 			
 			if(valid) {
+				kco.unblock();
+				
 				$('.urb-it .postcode-error').slideUp(200);
 				$('.urb-it .shipping-address').slideDown(200, function() {
 					$(this).find('.urb-it-street').focus();
@@ -175,6 +128,8 @@ jQuery(function($) {
 				}
 			}
 			else {
+				kco.block();
+				
 				$('.urb-it .postcode-error .postcode').text(postcode);
 				$('.urb-it .postcode-error').slideDown(200);
 				$('.urb-it .specific-time').slideUp(200);
@@ -197,9 +152,13 @@ jQuery(function($) {
 		
 		kco.restrict();
 		
-		if(kco.suspended) return;
+		if(kco.blocked) return;
 		
-		kco.suspend();
+		if(typeof window._klarnaCheckout == 'function') {
+			window._klarnaCheckout(function (api) {
+			  api.suspend();
+			});
+		}
 		
 		$.get('/', $('.urb-it').serialize() + '&wc-ajax=urb_it_reinit_kco', function(data) {
 			console.log('urb-it', 'Done!');
@@ -210,13 +169,7 @@ jQuery(function($) {
 			
 			if(!html.length) return;
 			
-			var focused = $('input:focus, textarea:focus');
-			
-			kco.suspended = false;
-			
 			$('#klarna-checkout-container').html(html);
-			
-			$('#urb-it-postcode').first();
 			
 			console.log('urb-it', 'Substituted!');
 		});
