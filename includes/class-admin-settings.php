@@ -102,6 +102,17 @@
 					'default' => 'errors',
 					'id'   => self::SETTINGS_PREFIX . 'log'
 				),
+				'callback' => array(
+					'name' => __('Callback', self::LANG),
+					'type' => 'text',
+					'class' => 'large-text code',
+					'id'   => self::SETTINGS_PREFIX . $environment . '_callback',
+					'default' => $this->url . 'callback.php',
+					'desc' => __('Paste this in urb-it\'s retailer portal. Note that this requires an encrypted connection (HTTPS).', self::LANG),
+					'custom_attributes' => array(
+						'readonly' => 'readonly'
+					)
+				),
 				'section_end' => array(
 					'type' => 'sectionend'
 				)
