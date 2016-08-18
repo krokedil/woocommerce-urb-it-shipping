@@ -8,7 +8,7 @@
 	
 	$urbit->log('Callback:', $_GET);
 	
-	if(empty($_GET['order_reference_id']) || empty($_GET['consumer_secret_hash']) || apply_filters('woocommerce_urb_it_callback_invalid', (strtolower($_GET['consumer_secret_hash']) !== md5($urbit->setting('shared_secret'))), $_GET)) {
+	if(empty($_GET['order_reference_id']) || empty($_GET['consumer_secret_hash']) || !apply_filters('woocommerce_urb_it_callback_valid', (strtolower($_GET['consumer_secret_hash']) === md5($urbit->setting('shared_secret'))), $_GET)) {
 		$urbit->log('Invalid callback');
 		status_header(403);
 		exit;
