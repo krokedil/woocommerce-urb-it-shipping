@@ -4,29 +4,77 @@ jQuery(function($) {
 	var kco = {
 		blocked: false,
 		suspended: false,
+		html: false,
+		
+		maybe_block: function() {
+			var self = this;
+					shipping_method = $('#kco-page-shipping input[type="radio"]:checked').val();
+			
+			// If not urb-it, abort
+			if(shipping_method != 'urb_it_one_hour' && shipping_method != 'urb_it_specific_time') {
+				self.unblock();
+				return;
+			}
+			
+			$('.klarna-checkout-urb-it').slideDown(200);
+			
+			/*if(shipping_method == 'urb_it_specific_time') {
+				
+			}*/
+			
+			var hidden_street = $('.urb-it [name="urb-it-street"]'),
+					hidden_postcode = $('.urb-it [name="urb-it-postcode"]'),
+					hidden_city = $('.urb-it [name="urb-it-city"]');
+			
+			console.log('#29', $.trim(hidden_street.val()), $.trim(hidden_postcode.val()), $.trim(hidden_city.val()), !hidden_postcode.data('valid'));
+			
+			if($.trim(hidden_street.val()) == '' || $.trim(hidden_postcode.val()) == '' || $.trim(hidden_city.val()) == '' || !hidden_postcode.data('valid')) {
+				self.block();
+				$('.urb-it-shipping-address').hide();
+			}
+		},
 		
 		block: function() {
-			this.suspend();
-			return;
+			var self = this;
 			
 			if(this.blocked) return;
 			
 			this.blocked = true;
 			
+			if(!self.html) {
+				self.html = $('<form class="urb-it-modal">' + $('.urb-it-html').html() + '</form>');
+			}
+			
+			self.populate_postcode();
+			self.populate_address();
+			
 			$('#urb-it-postcode').first();
 			
 			$('#klarna-checkout-container').block({
-				message: null,
+				message: self.html,
 				overlayCSS: {
 					background: '#fff',
-					opacity: 0.6
+					opacity: 0.85,
+					cursor: 'default'
+				},
+				css: {
+					width: 'auto',
+					'margin-top': '20px',
+					padding: '20px',
+					left: '20px',
+					right: '20px',
+					border: 'none',
+					cursor: 'default',
+					'box-shadow': '0 0 3px rgba(0, 0, 0, 0.2)'
 				}
 			});
+			
+			self.html.find('input[value=""]').first().focus();
 		},
 		
 		unblock: function() {
-			this.resume();
-			return;
+			//this.resume();
+			//return;
 			
 			if(!this.blocked) return;
 			
@@ -34,6 +82,60 @@ jQuery(function($) {
 			
 			$('#klarna-checkout-container').unblock();
 		},
+		
+		populate_postcode: function() {
+			var self = this,
+					form = $('.klarna-checkout-urb-it'),
+					postcode = form.find('[name="urb-it-postcode"]');
+			
+			self.html.find('#urb-it-postcode').val(postcode.val());
+			
+			if(postcode.data('valid')) self.html.find('.postcode-error').hide();
+			else self.html.find('.postcode-error').show();
+		},
+		
+		populate_address: function() {
+			var self = this,
+					form = $('.klarna-checkout-urb-it'),
+					street = form.find('[name="urb-it-street"]'),
+					postcode = form.find('[name="urb-it-postcode"]'),
+					city = form.find('[name="urb-it-city"]');
+			
+			self.html.find('#urb-it-street').val(street.val());
+			self.html.find('#urb-it-city').val(city.val());
+			
+			if(postcode.val() != '' && postcode.data('valid')) self.html.find('.shipping-address').show();
+			else self.html.find('.shipping-address').hide();
+		},
+		
+		format_address: function() {
+			var form = $('.klarna-checkout-urb-it'),
+					street = form.find('[name="urb-it-street"]').val(),
+					postcode = form.find('[name="urb-it-postcode"]').val(),
+					city = form.find('[name="urb-it-city"]').val(),
+					time = form.find('[name="urb-it-time"]').val();
+					
+			if(!street || !postcode || !city) {
+				$('.urb-it-shipping-address').hide();
+				return;
+			}
+			
+			form.find('.urb-it-address').html(street + '<br />' + postcode + ' ' + city);
+			
+			$('.urb-it-shipping-address').show();
+		},
+		
+		set_address: function(address) {
+			var form = $('.klarna-checkout-urb-it');
+			
+			if(typeof address.street !== 'undefined') form.find('[name="urb-it-street"]').val(address.street);
+			if(typeof address.postcode !== 'undefined') form.find('[name="urb-it-postcode"]').val(address.postcode);
+			if(typeof address.city !== 'undefined') form.find('[name="urb-it-city"]').val(address.city);
+			
+			this.format_address();
+		},
+		
+		// ---
 		
 		suspend: function() {
 			if(this.suspended) return;
@@ -121,17 +223,21 @@ jQuery(function($) {
 	
 	window.ivar = kco;
 	
-	kco.restrict();
+	kco.maybe_block();
 	
 	var submiting_form = false;
 	
 	// Change shipping method
 	$(document).on('change', '#kco-page-shipping input[type="radio"]', function(event) {
+		kco.format_address();
+		kco.maybe_block();
+		return;
+		
 		var shipping_method = $(this).val();
 		
 		kco.restrict();
 		
-		if(shipping_method == 'urb_it_specific_time' && $.trim($('.urb-it .postcode').val()) != '' && !$('.urb-it .postcode-error:visible').length) {
+		if(shipping_method == 'urb_it_specific_time') {
 			console.log('Valid specific time!');
 			$('.urb-it .specific-time').slideDown(200);
 		}
@@ -141,53 +247,46 @@ jQuery(function($) {
 		}
 		
 	// Change postcode
-	}).on('submit', '.urb-it', function(e) {
-		e.preventDefault();
+	}).on('click', '.urb-it-modal .check-postcode', function() {
+		var btn = $(this);
 		
-		if(submiting_form) return;
+		btn.attr('disabled', 'disabled');
 		
-		submiting_form = true;
+		var postcode = btn.closest('.urb-it-postcode').find('[name="urb-it-postcode"]').val();
 		
-		console.log('urb-it', 'Postcode form submited!');
-		
-		kco.suspend();
-		
-		var postcode = $('#urb-it-postcode').val();
+		console.log('Validating postcode...', postcode, $('#urb-it-postcode'), $('#urb-it-postcode').val());
 		
 		$.get('/', {'wc-ajax': 'urb_it_validate_postcode', postcode: postcode, save: true}, function(valid) {
+			btn.removeAttr('disabled');
+			
 			valid = !!parseInt(valid);
 			
 			//kco.resume();
 			
-			$('#urb-it-postcode').data('valid', valid);
-			kco.restrict();
+			$('.klarna-checkout-urb-it [name="urb-it-postcode"]').data('valid', valid);
+			//kco.restrict();
 			
 			if(valid) {
-				$('.urb-it .postcode-error').slideUp(200);
-				$('.urb-it .shipping-address').slideDown(200, function() {
+				$('.urb-it-modal .postcode-error').slideUp(200);
+				$('.urb-it-modal .shipping-address').slideDown(200, function() {
 					$(this).find('.urb-it-street').focus();
 				});
 				
-				console.log('Valid post code');
-				
-				if($('#kco-page-shipping input[type="radio"]:checked').val() == 'urb_it_specific_time') {
-					$('.urb-it .specific-time').slideDown(200);
-				}
+				console.log('Valid postcode', postcode);
 			}
 			else {
-				$('.urb-it .postcode-error .postcode').text(postcode);
-				$('.urb-it .postcode-error').slideDown(200);
-				$('.urb-it .specific-time').slideUp(200);
-				$('.urb-it .shipping-address').slideUp(200);
+				$('.urb-it-modal .postcode-error .postcode').text(postcode);
+				$('.urb-it-modal .postcode-error').slideDown(200);
+				$('.urb-it-modal .shipping-address').slideUp(200);
+				
+				console.log('Invalid postcode', postcode);
 			}
-			
-			submiting_form = false;
 		});
 	}).on('change', '#urb-it-postcode', function(e) {
-		$(this).closest('form').submit();
+		$(this).closest('.urb-it-postcode').find('.button').click();
 		
 	// Change address
-	}).on('change', '.urb-it .shipping-address', function() {
+	}).on('change', '.urb-it .shipping-addresssss', function() {
 		/*if($.trim($('#urb-it-street').val() === '') || $.trim($('#urb-it-city').val() === '')) {
 			kco.block();
 			return;
@@ -221,6 +320,67 @@ jQuery(function($) {
 			console.log('urb-it', 'Substituted!');
 		});
 	
+	// Form submit
+	}).on('submit', '.urb-it-modal', function(e) {
+		e.preventDefault();
+		
+		var form = $(this);
+		
+		// Check postcode if selected
+		if(form.find('[name="urb-it-postcode"]:focus').length) {
+			form.find('.check-postcode').click();
+			return;
+		}
+		
+		var hidden_street = $('.urb-it [name="urb-it-street"]'),
+				hidden_postcode = $('.urb-it [name="urb-it-postcode"]'),
+				hidden_city = $('.urb-it [name="urb-it-city"]'),
+				new_street = $('.urb-it-modal [name="urb-it-street"]').val(),
+				new_postcode = $('.urb-it-modal [name="urb-it-postcode"]').val(),
+				new_city = $('.urb-it-modal [name="urb-it-city"]').val();
+		
+		if($.trim(new_street) == '' || $.trim(new_postcode) == '' || $.trim(new_city) == '') {
+			return;
+		}
+		
+		// Abort if address isn't changed
+		if(new_street == hidden_street.val() && new_postcode == hidden_postcode.val() && new_city == hidden_city.val()) {
+			kco.unblock();
+			return;
+		}
+		
+		hidden_street.val(new_street);
+		hidden_postcode.val(new_postcode);
+		hidden_city.val(new_city);
+		
+		kco.format_address();
+		kco.suspend();
+		kco.unblock();
+		
+		$.get('/', form.serialize() + '&wc-ajax=urb_it_reinit_kco', function(data) {
+			console.log('urb-it', 'Done!');
+			
+			var html = $(data).find('#klarna-checkout-container');
+			
+			console.log('urb-it', 'found', html.length, 'element(s).');
+			
+			if(!html.length) return;
+			
+			var focused = $('input:focus, textarea:focus');
+			
+			kco.suspended = false;
+			
+			$('#klarna-checkout-container').html(html);
+			
+			$('#urb-it-postcode').first();
+			
+			console.log('urb-it', 'Substituted!');
+		});
+	
+	// If user wants to change address
+	}).on('click', '.urb-it-change', function() {
+		kco.block();
+	
 	// Change delivery time
 	}).on('blur', '.urb-it .specific-time', function() {
 		var data = $(this).find(':input').serialize();
@@ -230,14 +390,16 @@ jQuery(function($) {
 			
 			if(success) {
 				$('.delivery-time-error').slideUp(200);
-				kco.unblock();
+				//kco.unblock();
 			}
 			else {
 				$('.delivery-time-error').slideDown(200);
-				kco.block();
+				//kco.block();
 			}
 		});
 	});
+	
+	kco.format_address();
 	
 	/*return;
 	

@@ -37,6 +37,9 @@
 			
 			// Save shipping address when street and/or city is set
 			add_action('kco_before_confirm_order', array($this, 'set_shipping_address'), 1);
+			
+			// Don't add order note
+			add_filter('woocommerce_urb_it_add_delivery_time_order_note', array($this, 'add_delivery_time_order_note'), 10, 2);
 		}
 		
 		
@@ -309,27 +312,18 @@
 			$is_one_hour = ($shipping_methods && is_array($shipping_methods) && in_array('urb_it_one_hour', $shipping_methods));
 			$is_specific_time = ($shipping_methods && is_array($shipping_methods) && in_array('urb_it_specific_time', $shipping_methods));
 			?>
-				<form class="urb-it klarna-checkout-urb-it"<?php if(!$is_one_hour && !$is_specific_time): ?> style="display: none;"<?php endif; ?>>
-					<!--<input class="btn-test" type="button" value="Click" />-->
-					<h4><?php _e('Can you receive deliveries from urb-it?', self::LANG); ?></h4>
-					<p class="urb-it-postcode">
-						<label for="urb-it-postcode"><?php _e('Postcode', self::LANG); ?></label>
-						<input id="urb-it-postcode" class="input-text" name="urb-it-postcode" type="text" value="<?php echo $shipping_postcode; ?>" data-valid="<?php echo $postcode_error ? 'false' : 'true'; ?>" />
-						<input class="button" type="submit" value="<?php _e('Check postcode', self::LANG); ?>" />
-					</p>
+				<form class="urb-it klarna-checkout-urb-it" <?php if(!$is_one_hour && !$is_specific_time): ?>style="display: none;"<?php endif; ?>>
+					<input type="hidden" name="urb-it-street" value="<?php echo $shipping_street; ?>" />
+					<input type="hidden" name="urb-it-postcode" value="<?php echo $shipping_postcode; ?>" data-valid="<?php echo $postcode_error ? 'false' : 'true'; ?>" />
+					<input type="hidden" name="urb-it-city" value="<?php echo $shipping_city; ?>" />
 					
-					<div class="woocommerce-error postcode-error"<?php if(!$postcode_error): ?> style="display: none;"<?php endif; ?>><?php echo sprintf(__('We can unfortunately not deliver to postcode %s.', self::LANG), '<span class="postcode">' . $shipping_postcode . '</span>'); ?></div>
-					
-					<div class="shipping-address"<?php if(!$shipping_postcode || $postcode_error): ?> style="display: none;"<?php endif; ?>>
-						<h4><?php _e('Were should we come?', self::LANG); ?></h4>
-						<p>
-							<label for="urb-it-street"><?php _e('Address', self::LANG); ?></label>
-							<input id="urb-it-street" class="input-text urb-it-street" name="urb-it-street" type="text" value="<?php echo $shipping_street; ?>" placeholder="<?php _e('Street Address', self::LANG); ?>" />
-							<input id="urb-it-city" class="input-text urb-it-city" name="urb-it-city" type="text" value="<?php echo $shipping_city; ?>" placeholder="<?php _e('City', self::LANG); ?>" />
-						</p>
+					<div class="urb-it-shipping-address"<?php if(empty($shipping_street) || empty($shipping_postcode) || empty($shipping_city)): ?> style="display: none;"<?php endif; ?>>
+						<h4>Urb-it överlämnar din order till:</h4>
+						<p class="urb-it-address"><?php echo $shipping_street . '<br />' . $shipping_postcode . ' ' . $shipping_city; ?></p>
+						<p><input class="button urb-it-change" type="button" value="Ändra" /></p>
 					</div>
 					
-					<div class="specific-time"<?php if($postcode_error || !$is_specific_time): ?> style="display: none;"<?php endif; ?>>
+					<div class="specific-time"<?php if(!$is_specific_time): ?> style="display: none;"<?php endif; ?>>
 						<h4><?php _e('When should we come?', self::LANG); ?></h4>
 						<?php
 							$this->template('checkout/field-delivery-time', array(
@@ -342,7 +336,31 @@
 					</div>
 					
 					<div class="woocommerce-error delivery-time-error" style="display: none;"><?php _e('Please pick a valid delivery time.', self::LANG); ?></div>
+					
+					<script>jQuery('#urb_it_date').change();</script>
 				</form>
+				
+				<div class="urb-it-html" style="display: none;">
+					<!--<h4><?php _e('Can you receive deliveries from urb-it?', self::LANG); ?></h4>-->
+					<p>Innan du kan få dina varor med urb-it behöver vi kontrollera att vi kan urba till dig. Knappa in ditt postnummer nedan.</p>
+					<p class="urb-it-postcode">
+						<input id="urb-it-postcode" class="input-text" name="urb-it-postcode" type="text" />
+						<input class="button check-postcode" type="button" value="<?php _e('Check postcode', self::LANG); ?>" />
+					</p>
+					
+					<div class="woocommerce-error postcode-error"><?php echo sprintf(__('We can unfortunately not deliver to postcode %s.', self::LANG), '<span class="postcode"></span>'); ?></div>
+					
+					<div class="shipping-address">
+						<h4><?php _e('Were should we come?', self::LANG); ?></h4>
+						<p>
+							<input id="urb-it-street" class="input-text urb-it-street" name="urb-it-street" type="text" placeholder="<?php _e('Street Address', self::LANG); ?>" />
+							<input id="urb-it-city" class="input-text urb-it-city" name="urb-it-city" type="text" placeholder="<?php _e('City', self::LANG); ?>" />
+						</p>
+						<p>
+							<input class="button" type="submit" value="Fortsätt" />
+						</p>
+					</div>
+				</div>
 			<?php
 			
 			return;
@@ -395,6 +413,15 @@
 			if(WC()->session->order_awaiting_payment) {
 				update_post_meta(WC()->session->order_awaiting_payment, '_urb_it_delivery_time', $delivery_time);
 			}
+		}
+		
+		
+		public function add_delivery_time_order_note($add_order_note, $order) {
+			if($order->get_status() === 'kco-incomplete') {
+				$add_order_note = false;
+			}
+			
+			return $add_order_note;
 		}
 	}
 	
