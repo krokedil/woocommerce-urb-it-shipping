@@ -28,25 +28,25 @@
 					}
 					
 					$this->log('API result:', $opening_hours);
+					
+					$days = array();
+					
+					foreach($opening_hours as $day) {
+						if($day->closed) continue;
+						
+						$hours = (object)array(
+							'open' => $this->date($day->from),
+							'close' => $this->date($day->to)
+						);
+						
+						$days[] = $hours;
+					}
+					
+					set_transient('woocommerce_urb_it_delivery_days', $days, self::TRANSIENT_TTL);
 				}
 				catch(Exception $e) {
 					$this->error('Error while fetching opening hours: ' . $e->getMessage());
 				}
-				
-				$days = array();
-				
-				foreach($opening_hours as $day) {
-					if($day->closed) continue;
-					
-					$hours = (object)array(
-						'open' => $this->date($day->from),
-						'close' => $this->date($day->to)
-					);
-					
-					$days[] = $hours;
-				}
-				
-				set_transient('woocommerce_urb_it_delivery_days', $days, self::TRANSIENT_TTL);
 			}
 			else {
 				$this->log('Fetched opening hours from cache.');
