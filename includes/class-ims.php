@@ -66,7 +66,9 @@
 			
 			
 			protected function debug() {
-				var_dump(class_exists('WC_API_Products'));
+				#var_dump(class_exists('WC_API_Products'));
+				
+				$this->ims->GetStockLevels();
 			}
 			
 			
