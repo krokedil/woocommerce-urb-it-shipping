@@ -31,7 +31,7 @@
 		const OPTION_SPECIAL_OPENING_HOURS = 'wc-urb-it-special-opening-hours';
 		
 		const TRANSIENT_TTL = 60; // seconds
-		const SPECIFIC_TIME_RANGE = '+2 days'; // Actually 3 days: today + 2 days forward
+		const SPECIFIC_TIME_RANGE = '+4 days'; // Actually 3 days: today + 2 days forward
 		
 		const SETTINGS_PREFIX = 'urb_it_settings_';
 		
