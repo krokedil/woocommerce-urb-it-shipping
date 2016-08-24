@@ -17,8 +17,8 @@
 			#$this->postcode_validator = include($this->path . 'includes/class-frontend-postcode-validator.php');
 			
 			// Shipping calculator
-			add_action('woocommerce_after_shipping_calculator', array($this, 'shipping_calculator'));
-			add_action('woocommerce_after_cart', array($this->checkout, 'add_assets'));
+			/*add_action('woocommerce_after_shipping_calculator', array($this, 'shipping_calculator'));
+			add_action('woocommerce_after_cart', array($this->checkout, 'add_assets'));*/
 			
 			// Notices
 			add_action('woocommerce_add_to_cart', array($this, 'notice_added_product'), 10, 6);
