@@ -31,3 +31,23 @@
 .klarna-checkout-urb-it .specific-time p:last-child {
 	margin-bottom: 0;
 }
+
+.urb-it-modal .input-text {
+	margin-bottom: 10px;
+}
+
+.urb-it-modal .input-text:focus::-webkit-input-placeholder {
+	opacity: 1 !important;
+}
+
+.urb-it-modal .input-text:focus:-moz-placeholder {
+	opacity: 1 !important;
+}
+
+.urb-it-modal .input-text:focus::-moz-placeholder {
+	opacity: 1 !important;
+}
+
+.urb-it-modal .input-text:focus:-ms-input-placeholder {  
+	opacity: 1 !important;
+}

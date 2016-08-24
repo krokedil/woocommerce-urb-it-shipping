@@ -24,6 +24,8 @@
 			
 			add_action('wc_ajax_urb_it_reinit_kco', array($this, 'reinit_kco'));
 			add_filter('kco_create_order', array($this, 'add_attachment'));
+			add_filter('kco_create_order', array($this, 'add_shipping_information'));
+			add_filter('kco_update_order', array($this, 'add_shipping_information'));
 			#add_filter('kco_set_shipping_address', array($this, 'set_shipping_address'), 10, 3);
 			
 			// Save initial shipping address to order
@@ -40,6 +42,9 @@
 			
 			// Don't add order note
 			add_filter('woocommerce_urb_it_add_delivery_time_order_note', array($this, 'add_delivery_time_order_note'), 10, 2);
+			
+			// Clear shipping details
+			add_action('klarna_after_kco_confirmation', array($this, 'clear_shipping_details'));
 		}
 		
 		
@@ -317,14 +322,8 @@
 					<input type="hidden" name="urb-it-postcode" value="<?php echo $shipping_postcode; ?>" data-valid="<?php echo $postcode_error ? 'false' : 'true'; ?>" />
 					<input type="hidden" name="urb-it-city" value="<?php echo $shipping_city; ?>" />
 					
-					<div class="urb-it-shipping-address"<?php if(empty($shipping_street) || empty($shipping_postcode) || empty($shipping_city)): ?> style="display: none;"<?php endif; ?>>
-						<h4>Urb-it överlämnar din order till:</h4>
-						<p class="urb-it-address"><?php echo $shipping_street . '<br />' . $shipping_postcode . ' ' . $shipping_city; ?></p>
-						<p><input class="button urb-it-change" type="button" value="Ändra" /></p>
-					</div>
-					
 					<div class="specific-time"<?php if(!$is_specific_time): ?> style="display: none;"<?php endif; ?>>
-						<h4><?php _e('When should we come?', self::LANG); ?></h4>
+						<h4>När ska urb-it komma?</h4>
 						<?php
 							$this->template('checkout/field-delivery-time', array(
 								'is_cart' => true,
@@ -337,6 +336,12 @@
 					
 					<div class="woocommerce-error delivery-time-error" style="display: none;"><?php _e('Please pick a valid delivery time.', self::LANG); ?></div>
 					
+					<div class="urb-it-shipping-address"<?php if(empty($shipping_street) || empty($shipping_postcode) || empty($shipping_city)): ?> style="display: none;"<?php endif; ?>>
+						<h4>Urb-it överlämnar din order till:</h4>
+						<p class="urb-it-address"><?php echo $shipping_street . '<br />' . $shipping_postcode . ' ' . $shipping_city; ?></p>
+						<p><input class="button urb-it-change" type="button" value="Ändra" /></p>
+					</div>
+					
 					<script>jQuery('#urb_it_date').change();</script>
 				</form>
 				
@@ -344,21 +349,23 @@
 					<!--<h4><?php _e('Can you receive deliveries from urb-it?', self::LANG); ?></h4>-->
 					<p>Innan du kan få dina varor med urb-it behöver vi kontrollera att vi kan urba till dig. Knappa in ditt postnummer nedan.</p>
 					<p class="urb-it-postcode">
-						<input id="urb-it-postcode" class="input-text" name="urb-it-postcode" type="text" />
-						<input class="button check-postcode" type="button" value="<?php _e('Check postcode', self::LANG); ?>" />
+						<input id="urb-it-postcode" class="input-text" name="urb-it-postcode" type="text" placeholder="Postnr." />
+						<input class="button check-postcode" type="button" value="Kolla postnummer" />
 					</p>
 					
-					<div class="woocommerce-error postcode-error"><?php echo sprintf(__('We can unfortunately not deliver to postcode %s.', self::LANG), '<span class="postcode"></span>'); ?></div>
+					<div class="woocommerce-message postcode-success">Jadå, dit urbar vi!</div>
+					<div class="woocommerce-error postcode-error">Tyvärr kan vi inte urba dina varor till <span class="postcode"></span> ännu. Vill du se vart vi kan överlämna - <a target="_blank" href="#">klicka här</a>.</div>
 					
 					<div class="shipping-address">
-						<h4><?php _e('Were should we come?', self::LANG); ?></h4>
+						<h4>Vart vill du att vi ska komma?</h4>
 						<p>
-							<input id="urb-it-street" class="input-text urb-it-street" name="urb-it-street" type="text" placeholder="<?php _e('Street Address', self::LANG); ?>" />
-							<input id="urb-it-city" class="input-text urb-it-city" name="urb-it-city" type="text" placeholder="<?php _e('City', self::LANG); ?>" />
+							<input id="urb-it-street" class="input-text urb-it-street" name="urb-it-street" type="text" placeholder="Gatuadress" />
+							<input id="urb-it-city" class="input-text urb-it-city" name="urb-it-city" type="text" placeholder="Ort" />
 						</p>
 						<p>
 							<input class="button" type="submit" value="Fortsätt" />
 						</p>
+						<p>I nästa steg kommer du få välja betalningssätt med Klarna. </p>
 					</div>
 				</div>
 			<?php
@@ -422,6 +429,27 @@
 			}
 			
 			return $add_order_note;
+		}
+		
+		
+		public function clear_shipping_details($order_id) {
+			WC()->customer->set_default_data();
+		}
+		
+		
+		public function add_shipping_information($data) {
+			if($order_id = WC()->session->ongoing_klarna_order) {
+				$order = wc_get_order($order_id);
+				
+				if($order->has_shipping_method('urb_it_one_hour')) {
+					$data['options']['shipping_details'] = 'Överlämnas av urb-it';
+				}
+				elseif($order->has_shipping_method('urb_it_specific_time')) {
+					$data['options']['shipping_details'] = 'Överlämnas av urb-it ' . $order->urb_it_delivery_time;
+				}
+			}
+			
+			return $data;
 		}
 	}
 	

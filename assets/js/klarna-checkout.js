@@ -34,7 +34,9 @@ jQuery(function($) {
 			}
 		},
 		
-		block: function() {
+		block: function(focus) {
+			focus = focus || false;
+			
 			var self = this;
 			
 			if(this.blocked) return;
@@ -42,7 +44,7 @@ jQuery(function($) {
 			this.blocked = true;
 			
 			if(!self.html) {
-				self.html = $('<form class="urb-it-modal">' + $('.urb-it-html').html() + '</form>');
+				self.html = $('<form id="urb-it-modal" class="urb-it-modal">' + $('.urb-it-html').html() + '</form>');
 			}
 			
 			self.populate_postcode();
@@ -69,7 +71,9 @@ jQuery(function($) {
 				}
 			});
 			
-			self.html.find('input[value=""]').first().focus();
+			//window.location.hash = '#urb-it-modal';
+			
+			self.html.find(focus ? 'input' : 'input[value=""]').first().focus();
 		},
 		
 		unblock: function() {
@@ -90,8 +94,17 @@ jQuery(function($) {
 			
 			self.html.find('#urb-it-postcode').val(postcode.val());
 			
-			if(postcode.data('valid')) self.html.find('.postcode-error').hide();
-			else self.html.find('.postcode-error').show();
+			self.html.find('.postcode-error').hide();
+			self.html.find('.postcode-success').hide();
+			
+			if($.trim(postcode.val()) != '') {
+				if(postcode.data('valid')) {
+					self.html.find('.postcode-success').show();
+				}
+				else {
+					self.html.find('.postcode-error').show();
+				}
+			}
 		},
 		
 		populate_address: function() {
@@ -227,6 +240,18 @@ jQuery(function($) {
 	
 	var submiting_form = false;
 	
+	$(document.body).on('kco_widget_update_shipping', function(e, new_method) {
+		$('#shipping_method').block({
+			message: null,
+			overlayCSS: {
+				background: '#fff',
+				opacity: 0.6
+			},
+		});
+	}).on('kco_widget_updated_shipping', function(e, new_method) {
+		$('#shipping_method').unblock();
+	});
+	
 	// Change shipping method
 	$(document).on('change', '#kco-page-shipping input[type="radio"]', function(event) {
 		kco.format_address();
@@ -267,6 +292,7 @@ jQuery(function($) {
 			//kco.restrict();
 			
 			if(valid) {
+				$('.urb-it-modal .postcode-success').slideDown(200);
 				$('.urb-it-modal .postcode-error').slideUp(200);
 				$('.urb-it-modal .shipping-address').slideDown(200, function() {
 					$(this).find('.urb-it-street').focus();
@@ -276,6 +302,7 @@ jQuery(function($) {
 			}
 			else {
 				$('.urb-it-modal .postcode-error .postcode').text(postcode);
+				$('.urb-it-modal .postcode-success').slideUp(200);
 				$('.urb-it-modal .postcode-error').slideDown(200);
 				$('.urb-it-modal .shipping-address').slideUp(200);
 				
@@ -379,7 +406,7 @@ jQuery(function($) {
 	
 	// If user wants to change address
 	}).on('click', '.urb-it-change', function() {
-		kco.block();
+		kco.block(true);
 	
 	// Change delivery time
 	}).on('blur', '.urb-it .specific-time', function() {
