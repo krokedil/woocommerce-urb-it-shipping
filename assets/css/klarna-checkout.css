@@ -18,3 +18,16 @@
 .klarna-checkout-urb-it .urb-it-street {
 	margin-right: 2%;
 }
+
+.klarna-checkout-urb-it .urb-it-shipping-address,
+.klarna-checkout-urb-it .specific-time {
+	background: #eee;
+	border: 1px solid #ddd;
+	padding: 20px 25px 25px;
+	margin-bottom: 20px;
+}
+
+.klarna-checkout-urb-it .urb-it-shipping-address p:last-child,
+.klarna-checkout-urb-it .specific-time p:last-child {
+	margin-bottom: 0;
+}
