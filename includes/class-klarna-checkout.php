@@ -54,7 +54,7 @@
 				exit;
 			}
 			
-			$this->log($_GET);
+			$this->log('Re-initializing KCO. GET data:', $_GET);
 			
 			// Ensure shipping details are set
 			if(!isset($_GET['urb-it-street']) || !isset($_GET['urb-it-postcode']) || !isset($_GET['urb-it-city'])) {
@@ -70,10 +70,6 @@
 				'postcode' => $_GET['urb-it-postcode'],
 				'city' => $_GET['urb-it-city']
 			));
-			
-			#WC()->customer->set_shipping_address(sanitize_text_field($_GET['urb-it-street']));
-			#WC()->customer->set_shipping_postcode(sanitize_text_field($_GET['urb-it-postcode']));
-			#WC()->customer->set_shipping_city(sanitize_text_field($_GET['urb-it-city']));
 			
 			// Clear order session to force a new KCO session, and bypass resumetion.
 			// We have to do this as the other_delivery_address attachment needs to be added on initialization.
@@ -120,21 +116,6 @@
 				))
 			);
 			
-			/*$body = array();
-			
-			$body['other_delivery_address'] = array(array(
-				'shipping_method' => 'unregistered box',
-				'shipping_type' => 'express',
-				'street_address' => $shipping_street,
-				'street_number' => $shipping_number,
-				'postal_code' => $shipping_postcode,
-				'city' => $shipping_city,
-				'country' => 'se'
-			));
-			
-			$data['attachment']['content_type'] = 'application/vnd.klarna.internal.emd-v2+json';
-			$data['attachment']['body'] = json_encode($body);*/
-			
 			return $data;
 		}
 		
@@ -166,28 +147,7 @@
 		}
 		
 		
-		/*public function set_shipping_address($address, $order, $data) {
-			$shipping_street = WC()->customer->get_shipping_address();
-			$shipping_postcode = WC()->customer->get_shipping_postcode();
-			$shipping_city = WC()->customer->get_shipping_city();
-			
-			if($shipping_street && $shipping_postcode && $shipping_city) {
-				$address['country'] = 'SE';
-				$address['address_1'] = $shipping_street;
-				$address['address_2'] = '';
-				$address['postcode'] = $shipping_postcode;
-				$address['city'] = $shipping_city;
-			}
-			
-			$this->log('Changed KCO shipping address:', $address);
-			
-			return $address;
-		}*/
-		
-		
 		public function set_shipping_postcode() {
-			$this->log('Ah - ajax!');
-			
 			$this->save_shipping_address(array(
 				'postcode' => $_GET['postcode']
 			));
@@ -284,6 +244,8 @@
 		
 		
 		public function add_assets() {
+			if(!is_checkout()) return;
+			
 			$this->add_asset('urb-it-checkout', 'urb-it-checkout.js');
 			$this->add_asset('urb-it-klarna-checkout', 'klarna-checkout.js', array('klarna_checkout'));
 			$this->add_asset('urb-it-klarna-checkout', 'klarna-checkout.css');
@@ -316,83 +278,17 @@
 			$shipping_methods = WC()->session->get( 'chosen_shipping_methods');
 			$is_one_hour = ($shipping_methods && is_array($shipping_methods) && in_array('urb_it_one_hour', $shipping_methods));
 			$is_specific_time = ($shipping_methods && is_array($shipping_methods) && in_array('urb_it_specific_time', $shipping_methods));
-			?>
-				<form class="urb-it klarna-checkout-urb-it" <?php if(!$is_one_hour && !$is_specific_time): ?>style="display: none;"<?php endif; ?>>
-					<input type="hidden" name="urb-it-street" value="<?php echo $shipping_street; ?>" />
-					<input type="hidden" name="urb-it-postcode" value="<?php echo $shipping_postcode; ?>" data-valid="<?php echo $postcode_error ? 'false' : 'true'; ?>" />
-					<input type="hidden" name="urb-it-city" value="<?php echo $shipping_city; ?>" />
-					
-					<div class="specific-time"<?php if(!$is_specific_time): ?> style="display: none;"<?php endif; ?>>
-						<h4>När ska urb-it komma?</h4>
-						<?php
-							$this->template('checkout/field-delivery-time', array(
-								'is_cart' => true,
-								'selected_delivery_time' => $this->date(WC()->session->get('urb_it_delivery_time', $this->specific_time_offset())),
-								'now' => $this->date('now'),
-								'days' => $this->opening_hours->get()
-							));
-						?>
-					</div>
-					
-					<div class="woocommerce-error delivery-time-error" style="display: none;"><?php _e('Please pick a valid delivery time.', self::LANG); ?></div>
-					
-					<div class="urb-it-shipping-address"<?php if(empty($shipping_street) || empty($shipping_postcode) || empty($shipping_city)): ?> style="display: none;"<?php endif; ?>>
-						<h4>Urb-it överlämnar din order till:</h4>
-						<p class="urb-it-address"><?php echo $shipping_street . '<br />' . $shipping_postcode . ' ' . $shipping_city; ?></p>
-						<p><input class="button urb-it-change" type="button" value="Ändra" /></p>
-					</div>
-					
-					<script>jQuery('#urb_it_date').change();</script>
-				</form>
-				
-				<div class="urb-it-html" style="display: none;">
-					<!--<h4><?php _e('Can you receive deliveries from urb-it?', self::LANG); ?></h4>-->
-					<p>Innan du kan få dina varor med urb-it behöver vi kontrollera att vi kan urba till dig. Knappa in ditt postnummer nedan.</p>
-					<p class="urb-it-postcode">
-						<input id="urb-it-postcode" class="input-text" name="urb-it-postcode" type="text" placeholder="Postnr." />
-						<input class="button check-postcode" type="button" value="Kolla postnummer" />
-					</p>
-					
-					<div class="woocommerce-message postcode-success">Jadå, dit urbar vi!</div>
-					<div class="woocommerce-error postcode-error">Tyvärr kan vi inte urba dina varor till <span class="postcode"></span> ännu. Vill du se vart vi kan överlämna - <a target="_blank" href="#">klicka här</a>.</div>
-					
-					<div class="shipping-address">
-						<h4>Vart vill du att vi ska komma?</h4>
-						<p>
-							<input id="urb-it-street" class="input-text urb-it-street" name="urb-it-street" type="text" placeholder="Gatuadress" />
-							<input id="urb-it-city" class="input-text urb-it-city" name="urb-it-city" type="text" placeholder="Ort" />
-						</p>
-						<p>
-							<input class="button" type="submit" value="Fortsätt" />
-						</p>
-						<p>I nästa steg kommer du få välja betalningssätt med Klarna. </p>
-					</div>
-				</div>
-			<?php
 			
-			return;
+			$this->template('klarna-checkout/widget-fields', compact(
+				'is_one_hour',
+				'is_specific_time',
+				'shipping_street',
+				'shipping_postcode',
+				'postcode_error',
+				'shipping_city'
+			));
 			
-			$shipping_postcode = WC()->customer->get_shipping_postcode();
-			$postcode_error = ($shipping_postcode && !$this->validate->postcode($shipping_postcode));
-			
-			$shipping_methods = WC()->session->get( 'chosen_shipping_methods');
-			$is_one_hour = ($shipping_methods && is_array($shipping_methods) && in_array('urb_it_one_hour', $shipping_methods));
-			$is_specific_time = ($shipping_methods && is_array($shipping_methods) && in_array('urb_it_specific_time', $shipping_methods));
-			?>
-				<div class="urb-it"<?php if(!$is_one_hour && !$is_specific_time): ?> style="display: none;"<?php endif; ?>>
-					<div class="woocommerce-error postcode-error"<?php if(!$postcode_error): ?> style="display: none;"<?php endif; ?>><?php echo sprintf(__('We can unfortunately not deliver to postcode %s.', self::LANG), '<span class="postcode">' . $shipping_postcode . '</span>'); ?></div>
-					<div class="specific-time"<?php if($postcode_error || !$is_specific_time): ?> style="display: none;"<?php endif; ?>>
-						<?php
-							$this->template('checkout/field-delivery-time', array(
-								'is_cart' => true,
-								'selected_delivery_time' => $this->date(WC()->session->get('urb_it_delivery_time', $this->specific_time_offset())),
-								'now' => $this->date('now'),
-								'days' => $this->opening_hours->get()
-							));
-						?>
-					</div>
-				</div>
-			<?php
+			$this->template('klarna-checkout/modal-template');
 		}
 		
 		
@@ -434,18 +330,21 @@
 		
 		public function clear_shipping_details($order_id) {
 			WC()->customer->set_default_data();
+			unset(WC()->session->urb_it_delivery_time);
 		}
 		
 		
 		public function add_shipping_information($data) {
 			if($order_id = WC()->session->ongoing_klarna_order) {
-				$order = wc_get_order($order_id);
 				
-				if($order->has_shipping_method('urb_it_one_hour')) {
+				// Mention urb-it as delivery method
+				if($this->is_urbit($order_id)) {
 					$data['options']['shipping_details'] = 'Överlämnas av urb-it';
 				}
-				elseif($order->has_shipping_method('urb_it_specific_time')) {
-					$data['options']['shipping_details'] = 'Överlämnas av urb-it ' . $order->urb_it_delivery_time;
+				
+				// Clear shipping details if they aren't already set
+				elseif(!isset($data['options']['shipping_details'])) {
+					$data['options']['shipping_details'] = '';
 				}
 			}
 			

@@ -412,6 +412,8 @@ jQuery(function($) {
 	}).on('blur', '.urb-it .specific-time', function() {
 		var data = $(this).find(':input').serialize();
 		
+		console.log('Saving specific time', data);
+		
 		$.get('/', data + '&wc-ajax=urb_it_kco_delivery_time', function(success) {
 			success = !!success;
 			
@@ -425,6 +427,8 @@ jQuery(function($) {
 			}
 		});
 	});
+	
+	$('.urb-it .specific-time').blur();
 	
 	kco.format_address();
 	

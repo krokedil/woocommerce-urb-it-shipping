@@ -57,8 +57,6 @@
 					'opening_hours' => include(dirname(__FILE__) . '/includes/class-opening-hours.php'),
 					'coupon' => include(dirname(__FILE__) . '/includes/class-coupon.php')
 				);
-				
-				self::$_modules['klarna_checkout'] = include(dirname(__FILE__) . '/includes/class-klarna-checkout.php');
 			}
 			
 			return self::$_instance;
@@ -80,6 +78,9 @@
 			// Add shipping methods
 			add_action('woocommerce_shipping_init', array($this, 'shipping_init'));
 			add_filter('woocommerce_shipping_methods', array($this, 'add_shipping_method'));
+			
+			// Add Klarna Checkout support
+			add_action('plugins_loaded', array($this, 'klarna_checkout_support'));
 			
 			// Widget
 			add_action('widgets_init', array($this, 'register_widget'));
@@ -165,6 +166,15 @@
 			$methods[] = 'WC_Urb_It_Specific_Time';
 			
 			return $methods;
+		}
+		
+		
+		// Klarna Checkout support
+		public function klarna_checkout_support() {
+			#echo 'WC_Gateway_Klarna_Checkout? ';
+			#var_dump(class_exists('WC_Gateway_Klarna_Checkout'));
+			
+			self::$_modules['klarna_checkout'] = include(dirname(__FILE__) . '/includes/class-klarna-checkout.php');
 		}
 		
 		
