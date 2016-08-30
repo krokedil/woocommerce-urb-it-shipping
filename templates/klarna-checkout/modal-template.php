@@ -1,5 +1,5 @@
 <div class="urb-it-html" style="display: none;">
-	<p>Innan du kan få dina varor med urb-it behöver vi kontrollera att vi kan urba till dig. Knappa in ditt postnummer nedan.</p>
+	<p>Innan du kan få dina varor med urb-it behöver vi kontrollera om vi kan urba till dig. Knappa in ditt postnummer nedan.</p>
 	<p class="urb-it-postcode">
 		<input id="urb-it-postcode" class="input-text" name="urb-it-postcode" type="text" placeholder="Postnr." />
 		<input class="button check-postcode" type="button" value="Kolla postnummer" />

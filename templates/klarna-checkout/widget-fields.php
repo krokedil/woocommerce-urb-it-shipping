@@ -18,7 +18,7 @@
 	<div class="woocommerce-error delivery-time-error" style="display: none;"><?php _e('Please pick a valid delivery time.', self::LANG); ?></div>
 	
 	<div class="urb-it-shipping-address"<?php if(empty($shipping_street) || empty($shipping_postcode) || empty($shipping_city)): ?> style="display: none;"<?php endif; ?>>
-		<h4>Urb-it överlämnar din order till:</h4>
+		<h4>urb-it överlämnar din order till:</h4>
 		<p class="urb-it-address"><?php echo $shipping_street . '<br />' . $shipping_postcode . ' ' . $shipping_city; ?></p>
 		<p><input class="button urb-it-change" type="button" value="Ändra" /></p>
 	</div>
