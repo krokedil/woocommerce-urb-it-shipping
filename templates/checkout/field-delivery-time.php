@@ -32,6 +32,39 @@
 			<?php if(!$hide_time_field): ?>
 				<p id="urb_it_time_field" class="form-row form-row-wide">
 					<label for="urb_it_time"><?php _e('Time', self::LANG); ?> <span></span></label>
+                    
+                    <!-- ADDED TO DEMO.URB-IT.COM FOR DROPDOWNS -->
+                    
+                    <!-- time dropdowns -->
+                    
+                    <select id="urb_it_hour" name="urb_it_hour">
+                        
+                        <option value="" disabled selected>Hour</option>
+                        
+                        <?php foreach(range(0, 23, 1) as $hour): ?>
+                        
+                            <option value="<?php echo $hour; ?>"><?php echo $hour; ?></option>
+                        
+                        <?php endforeach; ?>
+                        
+                    </select>
+                    
+                    <select id="urb_it_minute" name="urb_it_minute">
+                        
+                        <option value="" disabled selected>Minute</option>
+                        
+                        <?php foreach(range(0, 45, 15) as $minute): ?>
+                        
+                            <?php if($minute == 0) { $minute = '00'; } ?>
+                        
+                            <option value="<?php echo $minute; ?>"><?php echo $minute; ?></option>
+                        
+                        <?php endforeach; ?>
+                        
+                    </select>
+                    
+                    <!-- ABOVE ADDED TO DEMO.URB-IT.COM FOR DROPDOWNS -->
+                    
 					<input id="urb_it_time" name="urb_it_time" type="time" value="<?php echo $selected_delivery_time->format('H:i'); ?>" placeholder="<?php _e('HH:MM', self::LANG); ?>" />
 					<span class="error"><?php _e('Closed', self::LANG); ?></span>
 				</p><!-- #urb_it_time_field -->

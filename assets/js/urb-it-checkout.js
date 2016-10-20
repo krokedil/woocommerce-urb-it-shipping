@@ -42,6 +42,78 @@ jQuery(function($) {
 			// Modify label
 			$('#urb_it_time_field label span').text('(' + time_open + ' - ' + time_close + ')');
 			
+            /* ADDED TO DEMO.URB-IT.COM FOR DROPDOWNS */
+            
+            $('#urb_it_hour').val("");
+            $('#urb_it_minute').val("");
+            
+            //remove hour options that are outside of opening hours
+            $('#urb_it_hour option').each(function(){
+
+                //hide
+                if($(this).val() < parseInt(time_open.split(":")[0], 10)
+                || $(this).val() > parseInt(time_close.split(":")[0], 10)) $(this).css('display', 'none');
+                
+                //show
+                if($(this).val() >= parseInt(time_open.split(":")[0], 10) 
+                && $(this).val() <= parseInt(time_close.split(":")[0], 10)) $(this).css('display', 'block');
+                
+                //hide first opening hour if minute opening is later than 45
+                if(parseInt(time_open.split(":")[1], 10) > 45 && $(this).val() == parseInt(time_open.split(":")[0], 10)) {
+                   
+                   $(this).css('display', 'none');
+                   
+                }
+
+            });
+            
+            //update minute field when changing hour field
+            $(document.body).on('change', '#urb_it_hour', function(){
+                
+                //empty minute field
+                $('#urb_it_minute').val("");
+                
+                //opening hour
+                if($('#urb_it_hour').val() == parseInt(time_open.split(":")[0], 10)) {
+                    
+                    $('#urb_it_minute option').each(function(){
+                        
+                        //check that minutes are later than opening minute
+                        if($(this).val() >= parseInt(time_open.split(":")[1], 10)){
+                            $(this).css('display', 'block');
+                        }else{
+                            $(this).css('display', 'none');
+                        }
+                        
+                    });
+                    
+                //closing hour
+                }else if($('#urb_it_hour').val() == parseInt(time_close.split(":")[0], 10)) {
+                    
+                    $('#urb_it_minute option').each(function(){
+                        
+                        //check that minutes are earlier than closing minute
+                        if($(this).val() <= parseInt(time_close.split(":")[1], 10)){
+                            $(this).css('display', 'block');
+                        }else{
+                            $(this).css('display', 'none');
+                        }
+                        
+                    });
+                    
+                //all other hours
+                }else{
+                    
+                    //show rest
+                    $('#urb_it_minute option').first().siblings().css('display', 'block');
+
+                }
+                
+                //hide placeholder
+                $('#urb_it_minute option').first().css('display', 'none');
+                
+            });
+            
 			// Set min/max time attributes
 			time.attr('min', time_open).attr('max', time_close);
 			
@@ -61,6 +133,25 @@ jQuery(function($) {
 		}
 	}
 	
+    //update delivery time field
+    $(document.body).on('change', '#urb_it_minute', function(){
+        
+        $('#urb_it_time').val($('#urb_it_hour').val() + ":" + $('#urb_it_minute').val());
+        
+    });
+    
+    //empty hour and minute fields when changing date
+    $(document.body).on('change', '#urb_it_date', function(){
+        
+        $('#urb_it_hour').val("");
+        $('#urb_it_minute').val("");
+        
+        $('#urb_it_time').val("");
+        
+    });
+    
+    /* ABOVE ADDED TO DEMO.URB-IT.COM FOR DROPDOWNS */
+    
 	// Adjust the lower time each second
 	function adjust_time() {
 		var option = $('#urb_it_date :selected'),
