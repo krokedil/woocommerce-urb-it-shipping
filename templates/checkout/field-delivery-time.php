@@ -12,7 +12,7 @@
 				<p id="urb_it_date_field" class="form-row form-row-wide">
 					<label for="urb_it_date"><?php _e('Day', self::LANG); ?></label>
 					<select id="urb_it_date" name="urb_it_date">
-						<option value="Day" disabled selected="selected">Day</option> <!-- NOT DONE!!!!!!!! -->
+						<option value="Day" disabled selected="selected">Day</option>
 						<?php foreach($days as $day): ?>
 							<?php
 								if($min_delivery_time > $day->close) continue;
