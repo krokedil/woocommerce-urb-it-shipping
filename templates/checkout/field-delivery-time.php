@@ -34,6 +34,10 @@
 				<p id="urb_it_time_field" class="form-row form-row-wide">
 					<label for="urb_it_time"><?php _e('Time', self::LANG); ?> <span></span></label>
 
+										<?php /*
+
+										// Temporarily remove hour and minute dropdowns as they don't work with Klarna
+
                     <!-- time dropdowns -->
 
                     <select id="urb_it_hour" name="urb_it_hour">
@@ -61,6 +65,8 @@
                         <?php endforeach; ?>
 
                     </select>
+
+										*/ ?>
 
 					<input id="urb_it_time" name="urb_it_time" type="time" value="<?php echo $selected_delivery_time->format('H:i'); ?>" placeholder="<?php _e('HH:MM', self::LANG); ?>" />
 					<span class="error"><?php _e('Closed', self::LANG); ?></span>
