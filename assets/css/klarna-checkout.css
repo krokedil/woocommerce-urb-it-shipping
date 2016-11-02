@@ -1,0 +1,53 @@
+.klarna-checkout-urb-it label {
+	display: block;
+}
+
+.klarna-checkout-urb-it p {
+	overflow: hidden;
+}
+
+.klarna-checkout-urb-it .input-text,
+.klarna-checkout-urb-it .button {
+	display: block;
+	float: left;
+	width: 49%;
+	margin: 0;
+}
+
+.klarna-checkout-urb-it .urb-it-postcode .input-text,
+.klarna-checkout-urb-it .urb-it-street {
+	margin-right: 2%;
+}
+
+.klarna-checkout-urb-it .urb-it-shipping-address,
+.klarna-checkout-urb-it .specific-time {
+	background: #eee;
+	border: 1px solid #ddd;
+	padding: 20px 25px 25px;
+	margin-bottom: 20px;
+}
+
+.klarna-checkout-urb-it .urb-it-shipping-address p:last-child,
+.klarna-checkout-urb-it .specific-time p:last-child {
+	margin-bottom: 0;
+}
+
+.urb-it-modal .input-text {
+	margin-bottom: 10px;
+}
+
+.urb-it-modal .input-text:focus::-webkit-input-placeholder {
+	opacity: 1 !important;
+}
+
+.urb-it-modal .input-text:focus:-moz-placeholder {
+	opacity: 1 !important;
+}
+
+.urb-it-modal .input-text:focus::-moz-placeholder {
+	opacity: 1 !important;
+}
+
+.urb-it-modal .input-text:focus:-ms-input-placeholder {  
+	opacity: 1 !important;
+}

@@ -31,7 +31,7 @@
 		const OPTION_SPECIAL_OPENING_HOURS = 'wc-urb-it-special-opening-hours';
 		
 		const TRANSIENT_TTL = 60; // seconds
-		const SPECIFIC_TIME_RANGE = '+2 days'; // Actually 3 days: today + 2 days forward
+		const SPECIFIC_TIME_RANGE = '+4 days'; // Actually 3 days: today + 2 days forward
 		
 		const SETTINGS_PREFIX = 'urb_it_settings_';
 		
@@ -86,6 +86,9 @@
 			// Add shipping methods
 			add_action('woocommerce_shipping_init', array($this, 'shipping_init'));
 			add_filter('woocommerce_shipping_methods', array($this, 'add_shipping_method'));
+			
+			// Add Klarna Checkout support
+			add_action('plugins_loaded', array($this, 'klarna_checkout_support'));
 			
 			// Widget
 			add_action('widgets_init', array($this, 'register_widget'));
@@ -174,6 +177,15 @@
 		}
 		
 		
+		// Klarna Checkout support
+		public function klarna_checkout_support() {
+			#echo 'WC_Gateway_Klarna_Checkout? ';
+			#var_dump(class_exists('WC_Gateway_Klarna_Checkout'));
+			
+			self::$_modules['klarna_checkout'] = include(dirname(__FILE__) . '/includes/class-klarna-checkout.php');
+		}
+		
+		
 		public function register_widget() {
 			register_widget('Urb_It_Postcode_Validator_Widget');
 		}
@@ -235,6 +247,20 @@
 		}
 		
 		
+		public function add_asset($handle, $src, $depend = array()) {
+			if(substr($src, -3) === '.js') {
+				wp_enqueue_script($handle, $this->url . 'assets/js/' . $src, $depend, self::VERSION, true);
+			}
+			else {
+				echo '<style>';
+				
+				include($this->path . 'assets/css/' . $src);
+				
+				echo '</style>';
+			}
+		}
+		
+		
 		// Sanitize phone number to the format "0701234567"
 		public function sanitize_phone($phone) {
 			$phone = preg_replace(array('/\D/', '/^(00)?(' . implode('|', $this->country_codes) . ')0?/'), array('', '0'), $phone);
@@ -242,6 +268,11 @@
 			if(!in_array(substr($phone, 0, 2), $this->mobile_prefixes) || strlen($phone) !== 10) return false;
 			
 			return $phone;
+		}
+		
+		
+		public function is_ajax() {
+			return (defined('DOING_AJAX') && DOING_AJAX);
 		}
 		
 		

@@ -51,7 +51,9 @@
 			if(!empty($delivery_time)) {
 				update_post_meta($order_id, '_urb_it_delivery_time', $delivery_time);
 				
-				$order->add_order_note(sprintf(__('Urb-it delivery time: %s', self::LANG), $delivery_time));
+				if(apply_filters('woocommerce_urb_it_add_delivery_time_order_note', true, $order)) {
+					$order->add_order_note(sprintf(__('Urb-it delivery time: %s', self::LANG), $delivery_time));
+				}
 			}
 			
 			// If there's an message, save it
@@ -116,7 +118,7 @@
 						'last_name' => $order->shipping_last_name,
 						'email' => $order->billing_email,
 						'cell_phone' => $this->sanitize_phone($order->billing_phone),
-						'consumer_comment' => $order->urb_it_message
+						'consumer_comment' => $order->urb_it_message ? $order->urb_it_message : $order->customer_message
 					), $order),
 					'store_location' => array('id' => $this->setting('pickup_location_id')),
 					'articles' => array()

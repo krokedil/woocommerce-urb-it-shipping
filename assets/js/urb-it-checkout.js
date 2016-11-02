@@ -15,9 +15,16 @@ jQuery(function($) {
 		remember_message = $(this).val();
 	});
 	
+	$(document.body).on('urbit_set_time_field', function() {
+		console.log('Setting time field on command...');
+		set_time_field();
+	});
+	
 	function set_time_field() {
 		var date = $('#urb_it_date'),
 				time = $('#urb_it_time');
+		
+		console.log('Setting time field', date);
 		
 		if(!date.length || !time.length) return;
 		
@@ -56,7 +63,7 @@ jQuery(function($) {
 				time.show().closest('p').find('.error').hide();
 				time.closest('p').find('label').show();
 				
-				if(time_now < time_open || time.val() > time_close || time.val() < time_open) time.val(time_open);
+				if(time.val() > time_close || time.val() < time_open) time.val(time_open);
 			}
 		}
 	}
