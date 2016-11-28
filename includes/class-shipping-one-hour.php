@@ -115,6 +115,14 @@
 				$delivery_time = $this->plugin->date($this->plugin->one_hour_offset());
 				
 				if(!$this->plugin->validate->opening_hours($delivery_time)) return false;
+
+				// Check if there are any back-order products in cart
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+					$_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+					if ( $_product->is_on_backorder( $cart_item['quantity'] ) ) {
+						return false;
+					}
+				}
 				
 				$is_available = $optional_postcode ? true : $this->plugin->validate->postcode($package['destination']['postcode']);
 				
