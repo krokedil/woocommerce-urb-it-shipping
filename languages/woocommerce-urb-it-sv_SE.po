@@ -367,7 +367,7 @@ msgid "Save"
 msgstr "Spara"
 
 #: ../includes/class-shipping-one-hour.php:14
-msgid "Now"
+msgid "urb-it now"
 msgstr "Nu"
 
 #: ../includes/class-shipping-one-hour.php:15
@@ -380,7 +380,7 @@ msgid "Enable/Disable"
 msgstr "Aktivera/Inaktivera"
 
 #: ../includes/class-shipping-one-hour.php:43
-msgid "Enable Now"
+msgid "Enable urb-it now"
 msgstr "Aktivera Nu."
 
 #: ../includes/class-shipping-one-hour.php:47 ../includes/class-shipping-specific-
