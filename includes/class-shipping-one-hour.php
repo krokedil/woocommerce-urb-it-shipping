@@ -12,7 +12,7 @@
 			public function __construct() {
 				$this->id = 'urb_it_one_hour';
 				$this->method_title = __('urb-it now', self::LANG);
-				$this->method_description = __('Allows deliveries now.', self::LANG);
+				$this->method_description = __('urb-it now allows deliveries now.', self::LANG);
 				$this->init();
 			}
 			

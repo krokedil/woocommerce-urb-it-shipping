@@ -371,7 +371,7 @@ msgid "urb-it now"
 msgstr "Nu"
 
 #: ../includes/class-shipping-one-hour.php:15
-msgid "Allows deliveries now."
+msgid "urb-it now allows deliveries now."
 msgstr "Möjliggör överlämning nu."
 
 #: ../includes/class-shipping-one-hour.php:41 ../includes/class-shipping-specific-
