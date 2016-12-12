@@ -11,8 +11,8 @@
 			
 			public function __construct() {
 				$this->id = 'urb_it_one_hour';
-				$this->method_title = __('Now', self::LANG);
-				$this->method_description = __('Allows deliveries now.', self::LANG);
+				$this->method_title = __('urb-it now', self::LANG);
+				$this->method_description = __('urb-it now allows deliveries now.', self::LANG);
 				$this->init();
 			}
 			
@@ -40,7 +40,7 @@
 					'enabled' => array(
 						'title' 		=> __('Enable/Disable', self::LANG),
 						'type' 			=> 'checkbox',
-						'label' 		=> __('Enable Now', self::LANG),
+						'label' 		=> __('Enable urb-it now', self::LANG),
 						'default' 		=> 'yes'
 					),
 					'title' => array(
