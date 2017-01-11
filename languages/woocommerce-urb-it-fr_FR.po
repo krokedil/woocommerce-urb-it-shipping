@@ -2,250 +2,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Urb-it Shipping\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: Wed Mar 09 2016 20:04:15 GMT+0100 (Västeuropa, normaltid)\n"
-"PO-Revision-Date: Thu Mar 24 2016 11:27:04 GMT+0100 (CET)\n"
+"POT-Creation-Date: 2017-01-10 11:44+0100\n"
+"PO-Revision-Date: 2017-01-10 11:44+0100\n"
 "Last-Translator: Sara Ek <sara@urb-it.com>\n"
 "Language-Team: \n"
-"Language: French (France)\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;"
 "__:1;_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;"
 "_x:1,2c;_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;"
 "esc_attr__:1;esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;"
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Loco-Target-Locale: fr_FR\n"
-"X-Generator: Loco - https://localise.biz/"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-SearchPath-0: .\n"
 
-#. Name of the plugin
-msgid "WooCommerce Urb-it Shipping"
-msgstr "WooCommerce urb-it livraison"
-
-#. URI of the plugin
-msgid "http://urb-it.com"
-msgstr "http://urb-it.com"
-
-#. Description of the plugin
-msgid "Let your customers choose urb-it as shipping method."
-msgstr "Proposez a votre client de choisir urb-it comme mode de livraison."
-
-#. Author of the plugin
-msgid "Webbmekanikern"
-msgstr "Webbmekanikern"
-
-#. Author URI of the plugin
-msgid "http://www.webbmekanikern.se"
-msgstr "www.webbmekanikern.se"
-
-#: ../woocommerce-urb-it.php:154 ../woocommerce-urb-it.php:172
-msgid "Picked up"
-msgstr "Récupéré"
-
-#: ../woocommerce-urb-it.php:159
-#, php-format
-msgid "Picked up <span class=\"count\">(%s)</span>"
-msgid_plural "Picked up <span class=\"count\">(%s)</span>"
-msgstr[0] "Récupéré (%s)"
-msgstr[1] ""
-
-#: ../woocommerce-urb-it.php:206
-msgid "This product can't be delivered by urb-it."
-msgstr "Ce produit ne pas peut pas être apporté par urb-it"
-
-#: ../woocommerce-urb-it.php:219
-#, php-format
-msgid "Your cart's total weight exceeds %d kilos and can't be delivered by urb-it."
+#: includes/class-admin-settings.php:14
+msgid "urb-it"
 msgstr ""
-"Le poids de votre commande surpasse la limite de %d kilos, le service urb-it "
-"n'est donc pas possible"
 
-#: ../woocommerce-urb-it.php:222
-#, php-format
-msgid "Your cart's total volume exceeds %d liters and can't be delivered by urb-it."
+#: includes/class-admin-settings.php:39
+msgid "General Settings"
 msgstr ""
-"Le volume de votre commande surpasse la limite de %d litre et ne peut pas "
-"être apporté par urb-it."
 
-#: ../woocommerce-urb-it.php:225 ../woocommerce-urb-it.php:801
-msgid "Your cart contains a bulky product and can't be delivered by urb-it."
+#: includes/class-admin-settings.php:43
+msgid "Notice: Undeliverable Product"
 msgstr ""
-"Votre commande contient un article volumineux et ne peut pas être apportée "
-"par urb-it."
 
-#: ../woocommerce-urb-it.php:244 ../woocommerce-urb-it.php:718
-#, php-format
-msgid ""
-"As the total weight of your cart is over %d kilos, it can unfortunately not "
-"be delivered by urb-it."
-msgstr ""
-"Comme le poids total de votre commande surpasse les %d kilos maximales, elle "
-"ne peut malheureusement pas être apportée par urb-it."
-
-#: ../woocommerce-urb-it.php:247 ../woocommerce-urb-it.php:723
-#, php-format
-msgid ""
-"As the total volume of your cart is over %d liters, it can unfortunately not "
-"be delivered by urb-it."
-msgstr ""
-"Comme le volume totale de votre commande surpasse les %d litres maximales, "
-"elle ne peut malheureusement pas être apportée par urb-it."
-
-#: ../woocommerce-urb-it.php:250
-msgid ""
-"As your cart contains a bulky product, it can unfortunately not be delivered "
-"by urb-it."
-msgstr ""
-"Comme votre commande contient un article volumineux, elle ne peut "
-"malheureusement pas être apporte par urb-it."
-
-#: ../woocommerce-urb-it.php:270
-msgid ""
-"As the delivery location is outside urb-it's availability zone, urb-it is "
-"disabled for this order."
-msgstr ""
-"Comme l'adresse de livraison se situe en dehors de la zone opérationnelle de "
-"urb-it, le service est désactivé pour cette commande."
-
-#: ../woocommerce-urb-it.php:350
-#, php-format
-msgid "Urb-it delivery time: %s"
-msgstr "Délai de la livraison urb-it: %s"
-
-#: ../woocommerce-urb-it.php:357
-#, php-format
-msgid "Urb-it message: %s"
-msgstr "Message urb-it: %s"
-
-#: ../woocommerce-urb-it.php:446
-#, php-format
-msgid ""
-"Thank you for choosing urb-it as shipping method. Your order is confirmed "
-"and will be delivered at %s."
-msgstr ""
-"Merci d'avoir choisi urb-it comme service supplémentaire. Votre commande est "
-"confirmée et vous sera apportée a %s"
-
-#: ../woocommerce-urb-it.php:461
-msgid "Urb-it problem"
-msgstr "Problème de urb-it"
-
-#: ../woocommerce-urb-it.php:461
-#, php-format
-msgid ""
-"The problem below occured while serving order #%d. If you can't solve the "
-"problem, contact the urb-it support."
-msgstr ""
-"Le problème suivant est survenu en traitant la commande #%d. Si vous "
-"n'arrivez pas à le résoudre, contactez l'assistance aux clients de urb-it"
-
-#: ../woocommerce-urb-it.php:671
-msgid "Please enter a valid cellphone number."
-msgstr "Merci de bien vouloir remplir un numéro de téléphone valide"
-
-#: ../woocommerce-urb-it.php:688
-#, php-format
-msgid "Please enter a delivery date in the format YYYY-MM-DD, ex: %s."
-msgstr ""
-"Merci de bien vouloir sélectionner une date de livraison en format AAAA-MM-"
-"JJ ex: %s"
-
-#: ../woocommerce-urb-it.php:693
-#, php-format
-msgid "Please enter a delivery time in the format HH:MM, ex: %s."
-msgstr ""
-"Merci de bien vouloir sélectionner une heure de livraison en format HH:MM, "
-"ex: %s."
-
-#: ../woocommerce-urb-it.php:701
-#, php-format
-msgid "Please pick a time from %s and forward."
-msgstr "Merci de bien vouloir selectionner une horaire entre %s et %s"
-
-#: ../woocommerce-urb-it.php:705
-#, php-format
-msgid ""
-"We can unfortunately not deliver this far in the future, please choose a "
-"date not later than %s."
-msgstr ""
-"Nous pouvons malheuresement pas vous proposer notre service aussi loin dans "
-"le futur, veuillez nous proposer une date avant le %s"
-
-#: ../woocommerce-urb-it.php:732
-msgid "Urb-it can unfortunately not deliver to this address."
-msgstr "Le service de urb-it n'est malheureusement pas possible pour cette adresse."
-
-#: ../woocommerce-urb-it.php:736
-msgid "We can unfortunately not deliver at this time, please choose another."
-msgstr ""
-"Nous ne pouvons malheureusement pas faire une livraison à votre horaire "
-"désirée, veuillez en sélectionner une autre."
-
-#: ../woocommerce-urb-it.php:808
-msgid ""
-"Your cart contains a product that's out of stock and can't be delivered by "
-"urb-it."
-msgstr ""
-"Votre panier contient un article épuisé en stock et ne peut donc pas être "
-"apporté par urb-it."
-
-#: ../templates/admin/plugin-settings.php:2
-msgid "Settings for Urb-it"
-msgstr "Configuraions de urb-it"
-
-#: ../templates/admin/plugin-settings.php:10
-msgid "API Credentials"
-msgstr "Qualification API?"
-
-#: ../templates/admin/plugin-settings.php:11
-msgid "These keys are available in the Retailer portal."
-msgstr "Ces clés sont disponibles dans le portal du détaillant."
-
-#: ../templates/admin/plugin-settings.php:15
-msgid "Consumer key"
-msgstr "Clé de consommateur"
-
-#: ../templates/admin/plugin-settings.php:19
-msgid "Consumer secret"
-msgstr "Sercret de consommateur"
-
-#: ../templates/admin/plugin-settings.php:23
-msgid "Token"
-msgstr "Marque/ Jeton"
-
-#: ../templates/admin/plugin-settings.php:27
-msgid "Pickup location ID"
-msgstr "ID de Location de collecte"
-
-#: ../templates/admin/plugin-settings.php:32
-msgid "Callback URL"
-msgstr "Retour appelle URL"
-
-#: ../templates/admin/plugin-settings.php:33
-msgid "Copy this URL and put it as callback URL in the Retailer portal."
-msgstr "Copie cette URL et le mettre comme callback URL dans le portal de détaillant"
-
-#: ../templates/admin/plugin-settings.php:37
-msgid "Test environment"
-msgstr "Environnement de test"
-
-#: ../templates/admin/plugin-settings.php:39
-msgid "Enable test mode"
-msgstr "Aktiver le mode de test"
-
-#: ../templates/admin/plugin-settings.php:47
-msgid "General settings"
-msgstr "Configuration général"
-
-#: ../templates/admin/plugin-settings.php:51
-msgid "Notice on product page"
-msgstr "Notification sur la page de produit"
-
-#: ../templates/admin/plugin-settings.php:53
+#: includes/class-admin-settings.php:44
 msgid ""
 "Let visitors know on the product page if the product can't be delivered by "
 "urb-it."
@@ -253,131 +42,101 @@ msgstr ""
 "Prévenez les visiteurs sur la page du produit s'il ne peut pas être livré "
 "par urb-it."
 
-#: ../templates/admin/plugin-settings.php:57
-msgid "Notice after added product"
-msgstr "Notification après qu'un article est ajouté."
+#: includes/class-admin-settings.php:50
+msgid "Notice: Exceeded Cart Limit"
+msgstr ""
 
-#: ../templates/admin/plugin-settings.php:59
+#: includes/class-admin-settings.php:51
 msgid "Tell the visitor when urb-it's deliver limits get exceeded."
-msgstr "Annoncez au visiteur quand les limites du service urb-it sont dépassées."
+msgstr ""
+"Annoncez au visiteur quand les limites du service urb-it sont dépassées."
 
-#: ../templates/admin/plugin-settings.php:63
-msgid "Notice in checkout & cart"
-msgstr "Notification dans le paiment final et le panier"
+#: includes/class-admin-settings.php:57
+msgid "Notice: Undeliverable Order"
+msgstr ""
 
-#: ../templates/admin/plugin-settings.php:65
+#: includes/class-admin-settings.php:58
 msgid "Explain in checkout and cart why an order can't be delivered by urb-it."
 msgstr ""
 "Expliquer dans le paiement final et le panier pourquoi une commande ne peut "
 "pas être prise en charge par urb-it."
 
-#: ../templates/admin/plugin-settings.php:69
-msgid "Postcode validator on product page"
-msgstr "Validation de code postal sur la page de produit. "
-
-#: ../templates/admin/plugin-settings.php:71
-msgid "Add a postcode validator on the product page."
-msgstr "Ajouter une validation de code postal sur la page de produit."
-
-#: ../templates/admin/plugin-settings.php:79
-msgid "Opening hours"
-msgstr "Horaires d'ouverture"
-
-#: ../templates/admin/plugin-settings.php:80
-msgid "The opening hours are from now on set in the Retailer portal."
-msgstr ""
-"Les horaires d'ouverture sont à partir de maintenant fixées dans le portal "
-"du détaillant "
-
-#: ../templates/admin/plugin-settings.php:86
-msgid "View log"
-msgstr "Regarder le journal"
-
-#: ../templates/admin/plugin-settings.php:86
-msgid "only intended for urb-it developers"
-msgstr "Seulement destiné pour développeurs de urb-it "
-
-#: ../templates/postcode-validator/form.php:2
-msgid "You can purchase with urb-it!"
-msgstr "Vous pouvez faire votre achat avec urb-it! "
-
-#: ../templates/postcode-validator/form.php:2
-msgid "Right now you can't purchase with urb-it at this postcode."
-msgstr ""
-"Pour le moment vous ne pouvez pas faire des achats avec le service urb-it "
-"pour ce code postal"
-
-#: ../templates/postcode-validator/form.php:2
-msgid "Can you purchase with urb-it?"
-msgstr "Pouvez vous faire des achats avec le service urb-it?"
-
-# "Essayez" riktar sig till direkt till kunden som en uppmaning då "Essayer" är själva agerandet.
-#: ../templates/postcode-validator/form.php:3
-msgid "Check another postcode"
-msgstr "Essayer un autre code postal"
-
-#: ../templates/postcode-validator/form.php:5
-msgid "Postcode"
-msgstr "Code postal"
-
-# Teste(testa)/Vérifier(dubbelkolla)/Cocher(kryssa i)
-#: ../templates/postcode-validator/form.php:6
-msgid "Check"
-msgstr "Vérifier"
-
-#: ../templates/checkout/field-delivery-time.php:3
-msgid "Delivery time"
-msgstr "Délai de livraison"
-
-#: ../templates/checkout/field-delivery-time.php:9
-msgid "Day"
-msgstr "Jour"
-
-#: ../templates/checkout/field-delivery-time.php:23
-msgid "today"
-msgstr "Aujourd'hui"
-
-#: ../templates/checkout/field-delivery-time.php:31
-msgid "Time"
-msgstr "Heure"
-
-#: ../templates/checkout/field-delivery-time.php:32
-msgid "HH:MM"
-msgstr "HH:MM"
-
-#: ../templates/checkout/field-delivery-time.php:33
-msgid "Closed"
-msgstr "Fermé"
-
-#: ../templates/checkout/field-message.php:3 ../templates/checkout/field-message.
-#: php:8
-msgid "Message to urb-it"
-msgstr "Message pour urb-it"
-
-#: ../templates/checkout/field-message.php:9
-msgid "Ex. entry code"
-msgstr "Ex. digiclé"
-
-#. Base ID
-#: ../includes/class-widget.php:14
+#: includes/class-admin-settings.php:64 includes/class-widget.php:15
 msgid "Postcode Validator"
 msgstr "validateur de code postal"
 
-#: ../includes/class-widget.php:15
-msgid "Let your customers see if they can have deliveries from urb-it."
+#: includes/class-admin-settings.php:65
+msgid "Add a postcode validator on the product page."
+msgstr "Ajouter une validation de code postal sur la page de produit."
+
+#: includes/class-admin-settings.php:82
+msgid "Technical Settings"
 msgstr ""
-"Offrez la possibilité à vos clients de vérifier si ils peuvent utiliser le "
-"service de urb-it."
 
-#: ../includes/class-widget.php:50
-msgid "Title:"
-msgstr "Titre:"
+#: includes/class-admin-settings.php:86
+msgid "Environment"
+msgstr ""
 
-#: ../includes/class-admin.php:21 ../includes/class-admin.php:21
+#: includes/class-admin-settings.php:89
+msgid "Production"
+msgstr ""
+
+#: includes/class-admin-settings.php:90
+msgid "Stage"
+msgstr ""
+
+#: includes/class-admin-settings.php:96
+msgid "Log"
+msgstr ""
+
+#: includes/class-admin-settings.php:99 includes/class-admin.php:58
+msgid "Only errors"
+msgstr ""
+
+#: includes/class-admin-settings.php:100
+msgid "Everything"
+msgstr ""
+
+#: includes/class-admin-settings.php:106
+msgid "Callback"
+msgstr ""
+
+#: includes/class-admin-settings.php:111
+msgid ""
+"Paste this in urb-it's retailer portal. Note that this requires an encrypted "
+"connection (HTTPS)."
+msgstr ""
+
+#: includes/class-admin-settings.php:128
+#, php-format
+msgid "%s Credentials"
+msgstr ""
+
+#: includes/class-admin-settings.php:128
+msgid "active"
+msgstr ""
+
+#: includes/class-admin-settings.php:132
+msgid "Store Key"
+msgstr ""
+
+#: includes/class-admin-settings.php:138
+msgid "Shared Secret"
+msgstr ""
+
+#: includes/class-admin-settings.php:144
+msgid "Pickup Location ID"
+msgstr ""
+
+#: includes/class-admin-settings.php:146
+msgid "Leave empty to use the default ID."
+msgstr ""
+
+#: includes/class-admin.php:27
 msgid "Urb-it"
 msgstr "urb-it"
 
-#: ../includes/class-admin.php:33
+#: includes/class-admin.php:38
 msgid ""
 "Urb-it requires cURL to work. Please contact your hosting provider or urb-it "
 "for help."
@@ -385,56 +144,33 @@ msgstr ""
 "urb-it exige un fonctionnement cURL. Contactez votre fournisseur d'accès ou "
 "urb-it pour vous assister."
 
-#: ../includes/class-admin.php:44
+#: includes/class-admin.php:49
 #, php-format
 msgid ""
-"You have to <a href=\"%s\">set up some settings</a> before your customers can "
-"use urb-it's shipping methods."
+"You have to <a href=\"%s\">set up some settings</a> before your customers "
+"can use urb-it's shipping methods."
 msgstr ""
 "la mise à jour de certains réglages sont nécessaire avant que votre client "
 "puisse utiliser le service proposé par urb-it."
 
-#: ../includes/class-admin.php:59
-msgid "Monday"
-msgstr "Lundi"
+#: includes/class-admin.php:58
+#, php-format
+msgid ""
+"You are in production environment and are currently logging everything, "
+"which isn't recommended. Please set the logging option to \"%s\" in <a href="
+"\"%s\">the settings</a>."
+msgstr ""
 
-#: ../includes/class-admin.php:60
-msgid "Tuesday"
-msgstr "Mardi\n"
-
-#: ../includes/class-admin.php:61
-msgid "Wednesday"
-msgstr "Mercredi"
-
-#: ../includes/class-admin.php:62
-msgid "Thursday"
-msgstr "Jeudi"
-
-#: ../includes/class-admin.php:63
-msgid "Friday"
-msgstr "Vendredi"
-
-#: ../includes/class-admin.php:64
-msgid "Saturday"
-msgstr "Samedi"
-
-#: ../includes/class-admin.php:65
-msgid "Sunday"
-msgstr "Dimanche"
-
-#: ../includes/class-admin.php:94
-msgid "Changes saved successfully."
-msgstr "Changements enregistrés avec succés"
-
-#: ../includes/class-admin.php:101
+#: includes/class-admin.php:68
 msgid "Bulky Product"
 msgstr "Produit volumineux"
 
-#: ../includes/class-admin.php:102
+#: includes/class-admin.php:69
 msgid "Please check this if the product is too bulky for urb-it"
-msgstr "Merci de cocher ici si l'article est trop volumineux pour le service urb-it"
+msgstr ""
+"Merci de cocher ici si l'article est trop volumineux pour le service urb-it"
 
-#: ../includes/class-admin.php:116
+#: includes/class-admin.php:83
 #, php-format
 msgid ""
 "Note: If the product exceeds %d kilos and/or %d liters, it can't be "
@@ -443,77 +179,11 @@ msgstr ""
 "Note: Si l'article dépassé %d kilos et %d litres, le service urb-it n'est "
 "pas possible."
 
-#: ../includes/class-shipping-one-hour.php:14
-msgid "urb-it 1 hour"
-msgstr "urb-it maintenant"
-
-#: ../includes/class-shipping-one-hour.php:15
-msgid "urb-it 1 hour allows deliveries within an hour."
-msgstr "urb-it maintenant, heure de votre choix "
-
-#: ../includes/class-shipping-one-hour.php:39 ../includes/class-shipping-specific-
-#: time.php:39
-msgid "Enable/Disable"
-msgstr "Activer/ désactiver"
-
-#: ../includes/class-shipping-one-hour.php:41
-msgid "Enable urb-it 1 hour"
-msgstr "Activer urb-it maintenant"
-
-#: ../includes/class-shipping-one-hour.php:45 ../includes/class-shipping-specific-
-#: time.php:45
-msgid "Method Title"
-msgstr "Titre de méthode"
-
-#: ../includes/class-shipping-one-hour.php:47 ../includes/class-shipping-specific-
-#: time.php:47
-msgid "This controls the title which the user sees during checkout."
-msgstr "Ceci contrôle le titre que l'utilisateur vois pendant le paiement finale."
-
-#: ../includes/class-shipping-one-hour.php:52 ../includes/class-shipping-specific-
-#: time.php:52
-msgid "Fee Type"
-msgstr "Type de frais"
-
-#: ../includes/class-shipping-one-hour.php:54 ../includes/class-shipping-specific-
-#: time.php:54
-msgid "How to calculate delivery charges"
-msgstr "Comment calculer les frais de livraison"
-
-#: ../includes/class-shipping-one-hour.php:57 ../includes/class-shipping-specific-
-#: time.php:57
-msgid "Fixed amount"
-msgstr "Montant fixe"
-
-#: ../includes/class-shipping-one-hour.php:58 ../includes/class-shipping-specific-
-#: time.php:58
-msgid "Percentage of cart total"
-msgstr "Pourcentage du panier totale"
-
-#: ../includes/class-shipping-one-hour.php:59 ../includes/class-shipping-specific-
-#: time.php:59
-msgid "Fixed amount per product"
-msgstr "Montant fixe par produits"
-
-#: ../includes/class-shipping-one-hour.php:64 ../includes/class-shipping-specific-
-#: time.php:64
-msgid "Price"
-msgstr "Prix"
-
-#: ../includes/class-shipping-one-hour.php:66 ../includes/class-shipping-specific-
-#: time.php:66
-msgid ""
-"What fee do you want to charge for local delivery, disregarded if you choose "
-"free. Leave blank to disable."
-msgstr ""
-"Quel frais souhaitez vous pour une livraison locale, en comptant aussi si "
-"vous choisissez une livraison gratuite? Laissez vide pour désactiver"
-
-#: ../includes/class-coupon.php:29
+#: includes/class-coupon.php:29
 msgid "Only valid for urb-it"
 msgstr "Seulement valable pour urb-it"
 
-#: ../includes/class-coupon.php:30
+#: includes/class-coupon.php:30
 msgid ""
 "Check this box if the coupon only should be valid when urb-it is selected as "
 "shipping method."
@@ -521,11 +191,11 @@ msgstr ""
 "Cochez cette case pour que le coupon sois valable seulement lorsque le "
 "service urb-it a été sélectionné"
 
-#: ../includes/class-coupon.php:35
+#: includes/class-coupon.php:35
 msgid "Free shipping with urb-it"
 msgstr "Frais de livraison gratuit avec le service urb-it"
 
-#: ../includes/class-coupon.php:36
+#: includes/class-coupon.php:36
 msgid ""
 "Check this box if the coupon grants free shipping with urb-it. This will "
 "remove the costs for the urb-it shipping methods when the coupon is applied."
@@ -533,7 +203,7 @@ msgstr ""
 "Cochez cette case si le coupon accorde un service gratuit avec urb-it. Cela "
 "enlèveras les frais de livraison lorsque le coupon est appliqué."
 
-#: ../includes/class-coupon.php:91
+#: includes/class-coupon.php:91
 msgid ""
 "Awesome! Ensure you're selecting urb-it as shipping method during checkout, "
 "and the discount is yours."
@@ -541,18 +211,434 @@ msgstr ""
 "Génial! Assurez-vous de sélectionner urb-it comme mode de livraison lors de "
 "votre paiement final, et le réduction sera á vous!"
 
-#: ../includes/class-shipping-specific-time.php:14
+#: includes/class-frontend-checkout.php:26
+#: includes/class-frontend-checkout.php:131
+#, php-format
+msgid ""
+"As the total weight of your cart is over %d kilos, it can unfortunately not "
+"be delivered by urb-it."
+msgstr ""
+"Comme le poids total de votre commande surpasse les %d kilos maximales, elle "
+"ne peut malheureusement pas être apportée par urb-it."
+
+#: includes/class-frontend-checkout.php:29
+#: includes/class-frontend-checkout.php:136
+#, php-format
+msgid ""
+"As the total volume of your cart is over %d liters, it can unfortunately not "
+"be delivered by urb-it."
+msgstr ""
+"Comme le volume totale de votre commande surpasse les %d litres maximales, "
+"elle ne peut malheureusement pas être apportée par urb-it."
+
+#: includes/class-frontend-checkout.php:32
+msgid ""
+"As your cart contains a bulky product, it can unfortunately not be delivered "
+"by urb-it."
+msgstr ""
+"Comme votre commande contient un article volumineux, elle ne peut "
+"malheureusement pas être apporte par urb-it."
+
+#: includes/class-frontend-checkout.php:44
+msgid ""
+"As the delivery location is outside urb-it's availability zone, urb-it is "
+"disabled for this order."
+msgstr ""
+"Comme l'adresse de livraison se situe en dehors de la zone opérationnelle de "
+"urb-it, le service est désactivé pour cette commande."
+
+#: includes/class-frontend-checkout.php:83
+msgid "Please enter a valid cellphone number."
+msgstr "Merci de bien vouloir remplir un numéro de téléphone valide"
+
+#: includes/class-frontend-checkout.php:100
+#, php-format
+msgid "Please enter a delivery date in the format YYYY-MM-DD, ex: %s."
+msgstr ""
+"Merci de bien vouloir sélectionner une date de livraison en format AAAA-MM-"
+"JJ ex: %s"
+
+#: includes/class-frontend-checkout.php:105
+#, php-format
+msgid "Please enter a delivery time in the format HH:MM, ex: %s."
+msgstr ""
+"Merci de bien vouloir sélectionner une heure de livraison en format HH:MM, "
+"ex: %s."
+
+#: includes/class-frontend-checkout.php:114
+#, php-format
+msgid "Please pick a time from %s and forward."
+msgstr "Merci de bien vouloir selectionner une horaire entre %s et %s"
+
+#: includes/class-frontend-checkout.php:118
+#, php-format
+msgid ""
+"We can unfortunately not deliver this far in the future, please choose a "
+"date not later than %s."
+msgstr ""
+"Nous pouvons malheuresement pas vous proposer notre service aussi loin dans "
+"le futur, veuillez nous proposer une date avant le %s"
+
+#: includes/class-frontend.php:37
+msgid "This product can't be delivered by urb-it."
+msgstr "Ce produit ne pas peut pas être apporté par urb-it"
+
+#: includes/class-frontend.php:48
+#, php-format
+msgid ""
+"Your cart's total weight exceeds %d kilos and can't be delivered by urb-it."
+msgstr ""
+"Le poids de votre commande surpasse la limite de %d kilos, le service urb-it "
+"n'est donc pas possible"
+
+#: includes/class-frontend.php:51
+#, php-format
+msgid ""
+"Your cart's total volume exceeds %d liters and can't be delivered by urb-it."
+msgstr ""
+"Le volume de votre commande surpasse la limite de %d litre et ne peut pas "
+"être apporté par urb-it."
+
+#: includes/class-frontend.php:54 includes/class-validate.php:125
+msgid "Your cart contains a bulky product and can't be delivered by urb-it."
+msgstr ""
+"Votre commande contient un article volumineux et ne peut pas être apportée "
+"par urb-it."
+
+#: includes/class-frontend.php:77
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: includes/class-klarna-checkout.php:192 includes/class-order.php:55
+#, php-format
+msgid "Urb-it delivery time: %s"
+msgstr "Délai de la livraison urb-it: %s"
+
+#: includes/class-order.php:18 includes/class-order.php:36
+msgid "Picked up"
+msgstr "Récupéré"
+
+#: includes/class-order.php:23
+#, php-format
+msgid "Picked up <span class=\"count\">(%s)</span>"
+msgid_plural "Picked up <span class=\"count\">(%s)</span>"
+msgstr[0] "Récupéré (%s)"
+msgstr[1] ""
+
+#: includes/class-order.php:63
+#, php-format
+msgid "Urb-it message: %s"
+msgstr "Message urb-it: %s"
+
+#: includes/class-order.php:140
+#, php-format
+msgid "Used %s of voucher: %s"
+msgstr ""
+
+#: includes/class-order.php:185
+#, php-format
+msgid ""
+"Thank you for choosing urb-it as shipping method. Your order is confirmed "
+"and will be delivered at %s."
+msgstr ""
+"Merci d'avoir choisi urb-it comme service supplémentaire. Votre commande est "
+"confirmée et vous sera apportée a %s"
+
+#: includes/class-shipping-one-hour.php:14
+msgid "urb-it now"
+msgstr ""
+
+#: includes/class-shipping-one-hour.php:15
+msgid "urb-it now allows deliveries now."
+msgstr ""
+
+#: includes/class-shipping-one-hour.php:41
+#: includes/class-shipping-specific-time.php:41
+msgid "Enable/Disable"
+msgstr "Activer/ désactiver"
+
+#: includes/class-shipping-one-hour.php:43
+msgid "Enable urb-it now"
+msgstr ""
+
+#: includes/class-shipping-one-hour.php:47
+#: includes/class-shipping-specific-time.php:47
+msgid "Method Title"
+msgstr "Titre de méthode"
+
+#: includes/class-shipping-one-hour.php:49
+#: includes/class-shipping-specific-time.php:49
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+"Ceci contrôle le titre que l'utilisateur vois pendant le paiement finale."
+
+#: includes/class-shipping-one-hour.php:54
+#: includes/class-shipping-specific-time.php:54
+msgid "Fee Type"
+msgstr "Type de frais"
+
+#: includes/class-shipping-one-hour.php:56
+#: includes/class-shipping-specific-time.php:56
+msgid "How to calculate delivery charges"
+msgstr "Comment calculer les frais de livraison"
+
+#: includes/class-shipping-one-hour.php:59
+#: includes/class-shipping-specific-time.php:59
+msgid "Fixed amount"
+msgstr "Montant fixe"
+
+#: includes/class-shipping-one-hour.php:60
+#: includes/class-shipping-specific-time.php:60
+msgid "Percentage of cart total"
+msgstr "Pourcentage du panier totale"
+
+#: includes/class-shipping-one-hour.php:61
+#: includes/class-shipping-specific-time.php:61
+msgid "Fixed amount per product"
+msgstr "Montant fixe par produits"
+
+#: includes/class-shipping-one-hour.php:66
+#: includes/class-shipping-specific-time.php:66
+msgid "Price"
+msgstr "Prix"
+
+#: includes/class-shipping-one-hour.php:68
+#: includes/class-shipping-specific-time.php:68
+msgid ""
+"What fee do you want to charge for local delivery, disregarded if you choose "
+"free. Leave blank to disable."
+msgstr ""
+"Quel frais souhaitez vous pour une livraison locale, en comptant aussi si "
+"vous choisissez une livraison gratuite? Laissez vide pour désactiver"
+
+#: includes/class-shipping-specific-time.php:14
 msgid "urb-it specific time"
 msgstr "urb-it heure précise"
 
-#: ../includes/class-shipping-specific-time.php:15
+#: includes/class-shipping-specific-time.php:15
 msgid "urb-it specific time allows deliveries at a specific time."
 msgstr "urb-it à l'heure précise permet une livraison à une heure précise"
 
-#: ../includes/class-shipping-specific-time.php:41
+#: includes/class-shipping-specific-time.php:43
 msgid "Enable urb-it specific time"
 msgstr "Activer urb-it heure précise"
 
-#: ../woocommerce-urb-it.php:334
-msgid "Save"
-msgstr "Sauvegarder"
+#: includes/class-validate.php:132
+msgid ""
+"Your cart contains a product that's out of stock and can't be delivered by "
+"urb-it."
+msgstr ""
+"Votre panier contient un article épuisé en stock et ne peut donc pas être "
+"apporté par urb-it."
+
+#: includes/class-validate.php:164
+msgid "Urb-it can unfortunately not deliver to this address."
+msgstr ""
+"Le service de urb-it n'est malheureusement pas possible pour cette adresse."
+
+#: includes/class-validate.php:168
+msgid "We can unfortunately not deliver at this time, please choose another."
+msgstr ""
+"Nous ne pouvons malheureusement pas faire une livraison à votre horaire "
+"désirée, veuillez en sélectionner une autre."
+
+#: includes/class-widget.php:16
+msgid "Let your customers see if they can have deliveries from urb-it."
+msgstr ""
+"Offrez la possibilité à vos clients de vérifier si ils peuvent utiliser le "
+"service de urb-it."
+
+#: includes/class-widget.php:51
+msgid "Title:"
+msgstr "Titre:"
+
+#: templates/checkout/field-delivery-time.php:7
+msgid "Delivery time"
+msgstr "Délai de livraison"
+
+#: templates/checkout/field-delivery-time.php:13
+msgid "Day"
+msgstr "Jour"
+
+#: templates/checkout/field-delivery-time.php:15
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: templates/checkout/field-delivery-time.php:27
+msgid "today"
+msgstr "Aujourd'hui"
+
+#: templates/checkout/field-delivery-time.php:35
+msgid "Time"
+msgstr "Heure"
+
+#: templates/checkout/field-delivery-time.php:71
+msgid "HH:MM"
+msgstr "HH:MM"
+
+#: templates/checkout/field-delivery-time.php:72
+msgid "Closed"
+msgstr "Fermé"
+
+#: templates/checkout/field-message.php:3
+#: templates/checkout/field-message.php:8
+msgid "Message to urb-it"
+msgstr "Message pour urb-it"
+
+#: templates/checkout/field-message.php:9
+msgid "Ex. entry code"
+msgstr "Ex. digiclé"
+
+#: templates/klarna-checkout/widget-fields.php:18
+msgid "Please pick a valid delivery time."
+msgstr ""
+
+#: templates/postcode-validator/form.php:2
+msgid "You can purchase with urb-it!"
+msgstr "Vous pouvez faire votre achat avec urb-it! "
+
+#: templates/postcode-validator/form.php:2
+msgid "Right now you can't purchase with urb-it at this postcode."
+msgstr ""
+"Pour le moment vous ne pouvez pas faire des achats avec le service urb-it "
+"pour ce code postal"
+
+#: templates/postcode-validator/form.php:2
+msgid "Can you purchase with urb-it?"
+msgstr "Pouvez vous faire des achats avec le service urb-it?"
+
+# "Essayez" riktar sig till direkt till kunden som en uppmaning då "Essayer" är själva agerandet.
+#: templates/postcode-validator/form.php:3
+msgid "Check another postcode"
+msgstr "Essayer un autre code postal"
+
+#: templates/postcode-validator/form.php:5
+msgid "Postcode"
+msgstr "Code postal"
+
+# Teste(testa)/Vérifier(dubbelkolla)/Cocher(kryssa i)
+#: templates/postcode-validator/form.php:6
+msgid "Check"
+msgstr "Vérifier"
+
+#~ msgid "WooCommerce Urb-it Shipping"
+#~ msgstr "WooCommerce urb-it livraison"
+
+#~ msgid "http://urb-it.com"
+#~ msgstr "http://urb-it.com"
+
+#~ msgid "Let your customers choose urb-it as shipping method."
+#~ msgstr "Proposez a votre client de choisir urb-it comme mode de livraison."
+
+#~ msgid "Webbmekanikern"
+#~ msgstr "Webbmekanikern"
+
+#~ msgid "http://www.webbmekanikern.se"
+#~ msgstr "www.webbmekanikern.se"
+
+#~ msgid "Urb-it problem"
+#~ msgstr "Problème de urb-it"
+
+#~ msgid ""
+#~ "The problem below occured while serving order #%d. If you can't solve the "
+#~ "problem, contact the urb-it support."
+#~ msgstr ""
+#~ "Le problème suivant est survenu en traitant la commande #%d. Si vous "
+#~ "n'arrivez pas à le résoudre, contactez l'assistance aux clients de urb-it"
+
+#~ msgid "Settings for Urb-it"
+#~ msgstr "Configuraions de urb-it"
+
+#~ msgid "API Credentials"
+#~ msgstr "Qualification API?"
+
+#~ msgid "These keys are available in the Retailer portal."
+#~ msgstr "Ces clés sont disponibles dans le portal du détaillant."
+
+#~ msgid "Consumer key"
+#~ msgstr "Clé de consommateur"
+
+#~ msgid "Consumer secret"
+#~ msgstr "Sercret de consommateur"
+
+#~ msgid "Token"
+#~ msgstr "Marque/ Jeton"
+
+#~ msgid "Pickup location ID"
+#~ msgstr "ID de Location de collecte"
+
+#~ msgid "Callback URL"
+#~ msgstr "Retour appelle URL"
+
+#~ msgid "Copy this URL and put it as callback URL in the Retailer portal."
+#~ msgstr ""
+#~ "Copie cette URL et le mettre comme callback URL dans le portal de "
+#~ "détaillant"
+
+#~ msgid "Test environment"
+#~ msgstr "Environnement de test"
+
+#~ msgid "Enable test mode"
+#~ msgstr "Aktiver le mode de test"
+
+#~ msgid "General settings"
+#~ msgstr "Configuration général"
+
+#~ msgid "Notice on product page"
+#~ msgstr "Notification sur la page de produit"
+
+#~ msgid "Notice after added product"
+#~ msgstr "Notification après qu'un article est ajouté."
+
+#~ msgid "Notice in checkout & cart"
+#~ msgstr "Notification dans le paiment final et le panier"
+
+#~ msgid "Postcode validator on product page"
+#~ msgstr "Validation de code postal sur la page de produit. "
+
+#~ msgid "Opening hours"
+#~ msgstr "Horaires d'ouverture"
+
+#~ msgid "The opening hours are from now on set in the Retailer portal."
+#~ msgstr ""
+#~ "Les horaires d'ouverture sont à partir de maintenant fixées dans le "
+#~ "portal du détaillant "
+
+#~ msgid "View log"
+#~ msgstr "Regarder le journal"
+
+#~ msgid "only intended for urb-it developers"
+#~ msgstr "Seulement destiné pour développeurs de urb-it "
+
+#~ msgid "Monday"
+#~ msgstr "Lundi"
+
+#~ msgid "Tuesday"
+#~ msgstr "Mardi\n"
+
+#~ msgid "Wednesday"
+#~ msgstr "Mercredi"
+
+#~ msgid "Thursday"
+#~ msgstr "Jeudi"
+
+#~ msgid "Friday"
+#~ msgstr "Vendredi"
+
+#~ msgid "Saturday"
+#~ msgstr "Samedi"
+
+#~ msgid "Sunday"
+#~ msgstr "Dimanche"
+
+#~ msgid "Changes saved successfully."
+#~ msgstr "Changements enregistrés avec succés"
+
+#~ msgid "urb-it 1 hour"
+#~ msgstr "urb-it maintenant"
+
+#~ msgid "urb-it 1 hour allows deliveries within an hour."
+#~ msgstr "urb-it maintenant, heure de votre choix "
+
+#~ msgid "Enable urb-it 1 hour"
+#~ msgstr "Activer urb-it maintenant"
